@@ -26,6 +26,9 @@ export default class Home extends React.Component{
       <Button title="顶部导航" onPress={() => {
         navigation.navigate('TopTabDemo');
       }} />
+      <Button title="抽屉导航" onPress={() => {
+        navigation.navigate('DrawerDemo');
+      }} />
     </View>);
   }
 }

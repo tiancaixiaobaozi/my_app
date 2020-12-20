@@ -4,6 +4,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import Home from '../pages/Home';
 import BottomTabNavigator from './BottomTabNavigator';
 import TopTabNavigator from './TopTabNavigator';
+import DrawerNavigator from './DrawerNavigator';
 import Page1 from '../pages/Page1';
 import Page2 from '../pages/Page2';
 import Page3 from '../pages/Page3';
@@ -23,6 +24,12 @@ export const AppStackNavigator = createStackNavigator(
       screen: TopTabNavigator,
       navigationOptions: {
         title: '顶部导航',
+      },
+    },
+    DrawerDemo: {
+      screen: DrawerNavigator,
+      navigationOptions: {
+        title: '抽屉页面',
       },
     },
     Page1: {
