@@ -3,8 +3,8 @@ import { ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { createDrawerNavigator, DrawerNavigatorItems } from 'react-navigation-drawer';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import Page4 from '../pages/Page4';
-import Page5 from '../pages/Page5';
+import Page4 from '../demo_pages/Page4';
+import Page5 from '../demo_pages/Page5';
 
 export default createDrawerNavigator(
   {

@@ -2,7 +2,7 @@ import React from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createSwitchNavigator } from 'react-navigation';
 import { AppStackNavigator } from './StackNavigator';
-import Login from '../pages/Login';
+import Login from '../demo_pages/Login';
 
 const AuthStack = createStackNavigator(
   {

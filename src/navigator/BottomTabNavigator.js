@@ -2,8 +2,8 @@ import React from 'react';
 import { Text } from 'react-native';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Page1 from '../pages/Page1';
-import Page2 from '../pages/Page2';
+import Page1 from '../demo_pages/Page1';
+import Page2 from '../demo_pages/Page2';
 
 export default createBottomTabNavigator(
   {
