@@ -8,7 +8,6 @@ import PopularScreen from '../pages/PopularScreen';
 import TrendingScreen from '../pages/TrendingScreen';
 import FavoriteScreen from '../pages/FavoriteScreen';
 import MyScreen from '../pages/MyScreen';
-import {View} from 'react-native-reanimated';
 
 // 在这里配置页面的路由
 const TABS = {
