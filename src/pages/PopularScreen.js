@@ -14,6 +14,9 @@ class PopularTab extends Component {
       <Button title="跳转Fetch" onPress={() => {
         NavigationUtil.goPage('FetchDemoPage');
       }} />
+      <Button title="跳转Storage" onPress={() => {
+        NavigationUtil.goPage('AsyncStoragePage');
+      }} />
     </View>);
   }
 }
