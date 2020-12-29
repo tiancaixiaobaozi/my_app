@@ -1,7 +1,7 @@
 import types from '../types';
 
 const defaultState = {
-  theme: 'blue',
+  color: 'blue',
 };
 
 export default function onAction(state = defaultState, action) {
@@ -9,7 +9,7 @@ export default function onAction(state = defaultState, action) {
     case types.THEME_CHANGE:
       return {
         ...state,
-        theme: action.theme,
+        color: action.theme,
       };
     default:
       return state;
