@@ -3,6 +3,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import WelcomePage from '../pages/WelcomePage';
 import HomePage from '../pages/HomePage';
 import DetailPage from '../pages/DetailPage';
+import FetchDemoPage from '../pages/FetchDemoPage';
 
 const InitNavigator = createStackNavigator(
   {
@@ -24,6 +25,7 @@ const MainNavigator = createStackNavigator(
       },
     },
     DetailPage: DetailPage,
+    FetchDemoPage: FetchDemoPage,
   },
 );
 
