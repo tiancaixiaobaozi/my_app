@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TextInput, Text, Button } from 'react-native';
+import { View, StyleSheet, TextInput, Text, Button, AsyncStorage } from 'react-native';
 
 export default class AsyncStoragePage extends React.Component {
   constructor(props) {
@@ -8,55 +8,44 @@ export default class AsyncStoragePage extends React.Component {
       showText: '',
     };
   }
-  // 请求数据
-  loadData() {
-    let url = `https://api.github.com/search/repositories?q=java`;
-    fetch(url)
-      .then(response => response.text())
-      .then(responseText => {
-        this.setState({
-          showText: responseText,
-        })
-      })
-  }
-  // 模拟错误请求
-  loadDataError() {
-    let url = `https://api.github.com/search/repositories?q=java`;
-    fetch(url)
-      .then(response => {
-        if(response.ok && false) {
-          return response.text()
-        }
-        throw new Error('Network error!!!')
-      })
-      .then(responseText => {
-        this.setState({
-          showText: responseText,
-        })
-      })
-      .catch(e => {
-        this.setState({
-          showText: e.toString(),
-        })
-      })
-  }
 
+  doSave = () => {
+    AsyncStorage.setItem('save_key', this.value)
+  }
+  doRemove = () => {
+    AsyncStorage.removeItem('save_key')
+  }
+  doGet = () => {
+    AsyncStorage.getItem('save_key').then(res => {
+      this.setState({
+        value: res
+      })
+    })
+  }
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>Fetch的使用</Text>
+        <Text style={styles.welcome}>AsyncStorage的使用</Text>
         <View style={styles.wrap}>
           <TextInput
             style={styles.input}
             onChangeText={text => {
-              this.searchKey = text;
+              this.value = text;
             }}
           />
+        </View>
+        <View style={styles.wrap}>
+          <Button title="存储" onPress={() => {
+            this.doSave();
+          }} />
+          <Button title="删除" onPress={() => {
+            this.doRemove();
+          }} />
           <Button title="获取" onPress={() => {
-            this.loadDataError();
+            this.doGet();
           }} />
         </View>
-        <Text>{this.state.showText}</Text>
+        <Text>{this.state.value}</Text>
       </View>
     )
   }

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { createAppContainer } from 'react-navigation';
-import NavigationUtil from '../navigator/NavigationUtil';
+import NavigationUtil from '../utils/NavigationUtil';
 
 class PopularTab extends Component {
   render() {
