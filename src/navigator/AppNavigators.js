@@ -5,6 +5,7 @@ import HomePage from '../pages/HomePage';
 import DetailPage from '../pages/DetailPage';
 import FetchDemoPage from '../pages/FetchDemoPage';
 import AsyncStoragePage from '../pages/AsyncStoragePage';
+import DataStorePage from '../pages/DataStorePage';
 
 const InitNavigator = createStackNavigator(
   {
@@ -28,6 +29,7 @@ const MainNavigator = createStackNavigator(
     DetailPage: DetailPage,
     FetchDemoPage: FetchDemoPage,
     AsyncStoragePage: AsyncStoragePage,
+    DataStorePage: DataStorePage,
   },
 );
 

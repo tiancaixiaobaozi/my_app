@@ -10,7 +10,7 @@ export default class DataStore {
     return new Promise((resolve, reject) => {
       this.fetchLocalData(url)
         .then(wrapData => {
-          if (wrapData && DataStore.checkTimestampValid(wrapData.timestamp)) {
+          if (wrapData && this.checkTimestampValid(wrapData.timestamp)) {
             resolve(wrapData);
           } else {
             this.fetchNetData(url)
