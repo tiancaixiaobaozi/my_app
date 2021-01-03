@@ -25,7 +25,7 @@ export default function onAction(state = defaultState, action) {
       return {
         ...state,
         [action.storeName]: {
-          ...[action.storeName],
+          ...state[action.storeName],
           items: action.items,
           isLoading: false,
         },
@@ -33,12 +33,18 @@ export default function onAction(state = defaultState, action) {
     case types.POPULAR_REFRESH:
       return {
         ...state,
-        isLoading: true,
+        [action.storeName]: {
+          ...state[action.storeName],
+          isLoading: true,
+        },
       };
     case types.LOAD_POPULAR_FAIL:
       return {
         ...state,
-        isLoading: false,
+        [action.storeName]: {
+          ...state[action.storeName],
+          isLoading: false,
+        },
       };
     default:
       return state;
