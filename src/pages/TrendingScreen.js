@@ -5,7 +5,6 @@ import actions from '../store/action';
 
 class TrendingScreen extends Component {
   render() {
-    console.log(this.props)
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>TrendingPage</Text>
@@ -18,8 +17,8 @@ class TrendingScreen extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  handleThemeChange: theme => dispatch(actions.onThemeChange(theme))
-})
+  handleThemeChange: theme => dispatch(actions.onThemeChange(theme)),
+});
 export default connect(null, mapDispatchToProps)(TrendingScreen);
 
 const styles = StyleSheet.create({

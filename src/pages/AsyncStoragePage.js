@@ -10,17 +10,17 @@ export default class AsyncStoragePage extends React.Component {
   }
 
   doSave = () => {
-    AsyncStorage.setItem('save_key', this.value)
+    AsyncStorage.setItem('save_key', this.value);
   }
   doRemove = () => {
-    AsyncStorage.removeItem('save_key')
+    AsyncStorage.removeItem('save_key');
   }
   doGet = () => {
     AsyncStorage.getItem('save_key').then(res => {
       this.setState({
-        value: res
-      })
-    })
+        value: res,
+      });
+    });
   }
   render() {
     return (
@@ -47,7 +47,7 @@ export default class AsyncStoragePage extends React.Component {
         </View>
         <Text>{this.state.value}</Text>
       </View>
-    )
+    );
   }
 }
 
