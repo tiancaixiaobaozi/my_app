@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, TextInput, Text, Button, AsyncStorage } from 'react-native';
+// @react-native-community/async-storage 代替 AsyncStorage
 
 export default class AsyncStoragePage extends React.Component {
   constructor(props) {
