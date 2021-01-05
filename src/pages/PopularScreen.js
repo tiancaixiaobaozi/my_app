@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, StyleSheet, Text, View, RefreshControl, ActivityIndicator } from 'react-native';
+import { FlatList, StyleSheet, View, RefreshControl, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
 import actions from '../store/action';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
@@ -83,7 +83,7 @@ class PopularTab extends Component {
    * 列表渲染尾部刷新组件
    * @return {*}
    */
-  genIndicator() {
+  renderIndicator() {
     return this._store().hideLoadingMore
       ? null
       : (
@@ -92,6 +92,7 @@ class PopularTab extends Component {
         </View>
       )
   }
+
   render() {
     let store = this._store();
     return (
@@ -110,10 +111,8 @@ class PopularTab extends Component {
               tintColor={THEME_COLOR}
             />
           }
-          ListFooterComponent={() => this.genIndicator()}
-          onEndReached={() => {
-            this.loadData(true);
-          }}
+          ListFooterComponent={() => this.renderIndicator()}
+          onEndReached={() => { this.loadData(true) }}
           onEndReachedThreshold={0.5}
         />
         <Toast ref="toast" position="center" />
