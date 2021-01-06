@@ -10,7 +10,7 @@ const StatusBarShape = {
   barStyle: PropTypes.oneOf(['light-content', 'default']),
   hidden: PropTypes.boolean,
   backgroundColor: PropTypes.string,
-}
+};
 
 export default class NavigationBar extends Component {
   // 提供属性类型检查
@@ -29,7 +29,7 @@ export default class NavigationBar extends Component {
     statusBar: {
       barStyle: 'light-content',
       hidden: false,
-    }
+    },
   };
 
   getButtonElement(data) {
@@ -37,7 +37,7 @@ export default class NavigationBar extends Component {
       <View style={styles.navBarButton}>
         {data ? data : null}
       </View>
-    )
+    );
   }
 
   render() {

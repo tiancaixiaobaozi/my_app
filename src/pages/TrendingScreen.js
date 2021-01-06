@@ -18,6 +18,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import TrendingItem from '../components/TrendingItem';
 import NavigationBar from '../components/NavigationBar';
 import TrendingDialog, { TimeSpans } from '../components/TrendingDialog';
+import NavigationUtil from '../utils/NavigationUtil';
 
 const URL = 'https://github.com/trending/';
 const THEME_COLOR = '#678';
@@ -37,7 +38,7 @@ class TrendingTab extends Component {
     this.timeSpanListener = DeviceEventEmitter.addListener(EVENT_TYPE_TIMESPAN_CHANGE, timeSpan => {
       this.timeSpan = timeSpan;
       this.loadData();
-    })
+    });
   }
   componentWillUnmount() {
     // 移除特定的事件监听
@@ -58,7 +59,7 @@ class TrendingTab extends Component {
       onLoadMoreTrending(this.storeName, ++store.pageIndex, PAGE_SIZE, store.items, callback => {
         // 没有更多了，进入回调函数
         this.refs.toast.show('没有更多了~', 3000);
-      })
+      });
     } else {
       onLoadTrendingData(this.storeName, url, PAGE_SIZE);
     }
@@ -77,7 +78,7 @@ class TrendingTab extends Component {
         isLoading: false,
         projectModes: [],
         hideLoadingMore: true,
-      }
+      };
     }
     return store;
   }
@@ -99,7 +100,11 @@ class TrendingTab extends Component {
   renderItem(data) {
     const item = data.item;
     return (
-      <TrendingItem item={item} onSelect={() => {}} />
+      <TrendingItem item={item} onSelect={() => {
+        NavigationUtil.goPage('DetailPage', {
+          projectModel: item,
+        });
+      }} />
     );
   }
 
@@ -114,7 +119,7 @@ class TrendingTab extends Component {
         <View style={styles.indicatorContainer}>
           <ActivityIndicator style={styles.indicator} color="orange" />
         </View>
-      )
+      );
   }
 
   render() {
@@ -140,10 +145,10 @@ class TrendingTab extends Component {
             // 保证onEndReached在onMomentumScrollBegin之后执行
             setTimeout(() => {
               if (this.canLoadMore) {
-                this.loadData(true)
+                this.loadData(true);
                 this.canLoadMore = false;
               }
-            }, 100)
+            }, 100);
           }}
           onEndReachedThreshold={0.5}
           onMomentumScrollBegin={() => {
@@ -170,10 +175,10 @@ const TrendingTabPage =  connect(mapStateToProps, mapDispatchToProps)(TrendingTa
 export default class TrendingScreen extends Component {
   constructor(props) {
     super(props);
-    this.tabNames = ['JavaScript', 'Vue', 'React', 'C'];
+    this.tabNames = ['JavaScript', 'Vue', 'C#', 'C'];
     this.state = {
-      timeSpan: TimeSpans[0]
-    }
+      timeSpan: TimeSpans[0],
+    };
   }
   _getTabs() {
     const tabs = {};
@@ -218,7 +223,7 @@ export default class TrendingScreen extends Component {
     return <TrendingDialog
       ref={dialog => this.dialog = dialog}
       onSelect={tab => this.onSelectTime(tab)}
-    />
+    />;
   }
 
   /**
@@ -229,7 +234,7 @@ export default class TrendingScreen extends Component {
     this.dialog.dismiss();
     this.setState({
       timeSpan: tab,
-    })
+    });
     // 触发一个特定的事件
     DeviceEventEmitter.emit(EVENT_TYPE_TIMESPAN_CHANGE, tab);
   }
@@ -264,7 +269,7 @@ export default class TrendingScreen extends Component {
     let barStyle={
       backgroundColor: THEME_COLOR,
       barStyle: 'light-content',
-    }
+    };
     let navigationBar = <NavigationBar
       title="趋势"
       statusBar={barStyle}
@@ -314,5 +319,5 @@ const styles = StyleSheet.create({
   },
   indicator: {
     margin: 10,
-  }
+  },
 });
