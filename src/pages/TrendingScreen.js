@@ -1,26 +1,49 @@
 import React, { Component } from 'react';
-import { FlatList, StyleSheet, View, RefreshControl, ActivityIndicator } from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  View,
+  RefreshControl,
+  ActivityIndicator,
+  TouchableOpacity,
+  Text,
+  DeviceEventEmitter,
+} from 'react-native';
 import { connect } from 'react-redux';
 import actions from '../store/action';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { createAppContainer } from 'react-navigation';
 import Toast from 'react-native-easy-toast';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import TrendingItem from '../components/TrendingItem';
 import NavigationBar from '../components/NavigationBar';
+import TrendingDialog, { TimeSpans } from '../components/TrendingDialog';
 
 const URL = 'https://github.com/trending/';
-const QUERY_STR = '?since=daily';
 const THEME_COLOR = '#678';
 const PAGE_SIZE = 10;
+const EVENT_TYPE_TIMESPAN_CHANGE = 'EVENT_TYPE_TIMESPAN_CHANGE';
 
 class TrendingTab extends Component {
   constructor(props) {
     super(props);
-    const { tabLabel } = this.props;
+    const { tabLabel, timeSpan } = this.props;
     this.storeName = tabLabel;
+    this.timeSpan = timeSpan;
   }
   componentDidMount() {
     this.loadData();
+    // 监听一个特定的事件
+    this.timeSpanListener = DeviceEventEmitter.addListener(EVENT_TYPE_TIMESPAN_CHANGE, timeSpan => {
+      this.timeSpan = timeSpan;
+      this.loadData();
+    })
+  }
+  componentWillUnmount() {
+    // 移除特定的事件监听
+    if (this.timeSpanListener) {
+      this.timeSpanListener.remove();
+    }
   }
 
   /**
@@ -65,7 +88,7 @@ class TrendingTab extends Component {
    * @return {string}
    */
   genFetchUrl(key) {
-    return URL + key + QUERY_STR;
+    return URL + key + '?' + this.timeSpan.searchText;
   }
 
   /**
@@ -148,12 +171,15 @@ export default class TrendingScreen extends Component {
   constructor(props) {
     super(props);
     this.tabNames = ['JavaScript', 'Vue', 'React', 'C'];
+    this.state = {
+      timeSpan: TimeSpans[0]
+    }
   }
   _getTabs() {
     const tabs = {};
     this.tabNames.forEach((item, index) => {
       tabs[`tab${index}`] = {
-        screen: props => <TrendingTabPage {...props} tabLabel={item} />,
+        screen: props => <TrendingTabPage {...props} timeSpan={this.state.timeSpan} tabLabel={item} />,
         navigationOptions: {
           title: item,
         },
@@ -161,6 +187,79 @@ export default class TrendingScreen extends Component {
     });
     return tabs;
   }
+
+  /**
+   * 渲染头部
+   * @return {*}
+   */
+  renderTitleView() {
+    return (
+      <View>
+        <TouchableOpacity
+          underlayColor={'transparent'}
+          onPress={() => this.dialog.show()}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text style={{ fontSize: 18, color: '#fff', fontWeight: '400' }}>
+              趋势 {this.state.timeSpan.showText}
+            </Text>
+            <MaterialIcon name={'arrow-drop-down'} size={22} style={{ color: '#fff' }} />
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  /**
+   * 渲染dialog
+   * @return {*}
+   */
+  renderTendingDialog() {
+    return <TrendingDialog
+      ref={dialog => this.dialog = dialog}
+      onSelect={tab => this.onSelectTime(tab)}
+    />
+  }
+
+  /**
+   * 选择时间点
+   * @param tab 选中的时间obj
+   */
+  onSelectTime(tab) {
+    this.dialog.dismiss();
+    this.setState({
+      timeSpan: tab,
+    })
+    // 触发一个特定的事件
+    DeviceEventEmitter.emit(EVENT_TYPE_TIMESPAN_CHANGE, tab);
+  }
+
+  /**
+   * 优化判断tabNav是否存在
+   * @return {NavigationContainer}
+   * @private
+   */
+  _tabNav() {
+    if (!this.tabNav) {
+      this.tabNav = createAppContainer(createMaterialTopTabNavigator(
+        this._getTabs(),
+        {
+          tabBarOptions: {
+            tabStyle: styles.tabStyle,
+            upperCaseLabel: false,
+            scrollEnabled: true,
+            style: {
+              backgroundColor: THEME_COLOR,
+            },
+            indicatorStyle: styles.indicatorStyle,
+            labelStyle: styles.labelStyle,
+          },
+        }
+      ));
+    }
+    return this.tabNav;
+  }
+
   render() {
     let barStyle={
       backgroundColor: THEME_COLOR,
@@ -170,26 +269,20 @@ export default class TrendingScreen extends Component {
       title="趋势"
       statusBar={barStyle}
       style={{ backgroundColor: THEME_COLOR }}
+      titleView={this.renderTitleView()}
     />;
-    const TabNavigator = createAppContainer(createMaterialTopTabNavigator(
-      this._getTabs(),
-      {
-        tabBarOptions: {
-          tabStyle: styles.tabStyle,
-          upperCaseLabel: false,
-          scrollEnabled: true,
-          style: {
-            backgroundColor: THEME_COLOR,
-          },
-          indicatorStyle: styles.indicatorStyle,
-          labelStyle: styles.labelStyle,
-        },
-      }
-    ));
+    /**
+     * 【优化】
+     ** 避免每次state更新，tabNav都要重新创建一次
+     ** 但是tabNav不更新，则不会刷新tabNav对应的列表
+     ** 所以我们使用DeviceEventEmitter发送事件更新列表数据
+     */
+    const TabNavigator = this._tabNav();
     return (
       <View style={styles.container}>
         {navigationBar}
         <TabNavigator />
+        {this.renderTendingDialog()}
       </View>
     );
   }
