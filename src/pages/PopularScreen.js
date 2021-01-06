@@ -112,8 +112,20 @@ class PopularTab extends Component {
             />
           }
           ListFooterComponent={() => this.renderIndicator()}
-          onEndReached={() => { this.loadData(true) }}
+          onEndReached={() => {
+            // 保证onEndReached在onMomentumScrollBegin之后执行
+            setTimeout(() => {
+              if (this.canLoadMore) {
+                this.loadData(true)
+                this.canLoadMore = false;
+              }
+            }, 100)
+          }}
           onEndReachedThreshold={0.5}
+          onMomentumScrollBegin={() => {
+            // fix react-native 5.x 初始化时滚动调用onEndReached会调用两次
+            this.canLoadMore = true;
+          }}
         />
         <Toast ref="toast" position="center" />
       </View>
@@ -134,8 +146,7 @@ const PopularTabPage =  connect(mapStateToProps, mapDispatchToProps)(PopularTab)
 export default class PopularScreen extends Component {
   constructor(props) {
     super(props);
-    // this.tabNames = ['Java', 'Android', 'iOS', 'React', 'PHP'];
-    this.tabNames = ['React'];
+    this.tabNames = ['Java', 'Android', 'iOS', 'React', 'PHP'];
   }
   _getTabs() {
     const tabs = {};

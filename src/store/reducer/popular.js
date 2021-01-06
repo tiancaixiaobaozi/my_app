@@ -40,6 +40,7 @@ export default function onAction(state = defaultState, action) {
         [action.storeName]: {
           ...state[action.storeName],
           isLoading: true,
+          hideLoadingMore: true,
         },
       };
     case types.POPULAR_REFRESH_FAIL:
