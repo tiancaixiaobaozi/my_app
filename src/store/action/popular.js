@@ -7,15 +7,22 @@ import { handleData } from '../../utils/ActionUtil';
  * @param storeName
  * @param url
  * @param pageSize
+ * @param favoriteDao
  * @return {function(...[*]=)}
  */
-export function onLoadPopularData (storeName, url, pageSize) {
+export function onLoadPopularData (storeName, url, pageSize, favoriteDao) {
   return dispatch => {
     dispatch({ type: types.POPULAR_REFRESH, storeName });
     let dataStore = new DataStore();
     dataStore.fetchData(url, FLAG_STORE.flag_popular)
       .then(data => {
-        handleData(types.POPULAR_REFRESH_SUCCESS, dispatch, storeName, data, pageSize);
+        handleData(
+          types.POPULAR_REFRESH_SUCCESS,
+          dispatch,
+          storeName,
+          data,
+          pageSize,
+          favoriteDao);
       })
       .catch(error => {
         console.log(error);
