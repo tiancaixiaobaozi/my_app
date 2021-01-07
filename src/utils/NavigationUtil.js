@@ -21,4 +21,12 @@ export default class NavigationUtil {
     }
     navigation.navigate(route, {...params});
   }
+
+  /**
+   * 返回
+   * @param navigation
+   */
+  static goBack(navigation) {
+    navigation.goBack();
+  }
 }

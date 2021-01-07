@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { DeviceInfo, StyleSheet, TouchableOpacity, View } from 'react-native';
-import WebView from 'react-native-webview';
+import { WebView } from 'react-native-webview';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import NavigationBar from '../components/NavigationBar';
 import ViewUtil from '../utils/ViewUtil';
@@ -67,7 +67,7 @@ export default class DetailPage extends Component {
         <WebView
           ref={webview => this.webview = webview}
           startInLoadingState={true}
-          onNavigationStateChange={e => this.onNavigationStateChange()}
+          onNavigationStateChange={e => this.onNavigationStateChange(e)}
           source={{ uri: this.state.url }}
         />
       </View>
