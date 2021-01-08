@@ -76,7 +76,7 @@ class TrendingTab extends Component {
       store = {
         items: [],
         isLoading: false,
-        projectModes: [],
+        projectModels: [],
         hideLoadingMore: true,
       };
     }
@@ -127,7 +127,7 @@ class TrendingTab extends Component {
     return (
       <View style={styles.container}>
         <FlatList
-          data={store.projectModes}
+          data={store.projectModels}
           renderItem={data => this.renderItem(data)}
           keyExtractor={item => 't' + (item.fullName || item.id)}
           refreshControl={

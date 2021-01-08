@@ -8,11 +8,15 @@ import Toast from 'react-native-easy-toast';
 import PopularItem from '../components/PopularItem';
 import NavigationBar from '../components/NavigationBar';
 import NavigationUtil from '../utils/NavigationUtil';
+import FavoriteDao from '../utils/FavoriteDao';
+import { FLAG_STORE } from '../utils/DataStoreUtil';
+import FavoriteUtil from '../utils/FavoriteUtil';
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
 const THEME_COLOR = '#678';
 const PAGE_SIZE = 10;
+const favoriteDao = new FavoriteDao(FLAG_STORE.flag_popular);
 
 class PopularTab extends Component {
   constructor(props) {
@@ -33,12 +37,19 @@ class PopularTab extends Component {
     const store = this._store();
     const url = this.genFetchUrl(this.storeName);
     if (loadMore) {
-      onLoadMorePopular(this.storeName, ++store.pageIndex, PAGE_SIZE, store.items, callback => {
-        // 没有更多了，进入回调函数
-        this.refs.toast.show('没有更多了~', 3000);
-      })
+      onLoadMorePopular(
+        this.storeName,
+        ++store.pageIndex,
+        PAGE_SIZE,
+        store.items,
+        favoriteDao,
+        callback => {
+          // 没有更多了，进入回调函数
+          this.refs.toast.show('没有更多了~', 3000);
+        }
+      )
     } else {
-      onLoadPopularData(this.storeName, url, PAGE_SIZE);
+      onLoadPopularData(this.storeName, url, PAGE_SIZE, favoriteDao);
     }
   }
 
@@ -53,7 +64,7 @@ class PopularTab extends Component {
       store = {
         items: [],
         isLoading: false,
-        projectModes: [],
+        projectModels: [],
         hideLoadingMore: true,
       }
     }
@@ -77,11 +88,17 @@ class PopularTab extends Component {
   renderItem(data) {
     const item = data.item;
     return (
-      <PopularItem item={item} onSelect={() => {
-        NavigationUtil.goPage('DetailPage', {
-          projectModel: item,
-        })
-      }} />
+      <PopularItem
+        projectModel={item}
+        onSelect={() => {
+          NavigationUtil.goPage('DetailPage', {
+            projectModel: item,
+          })
+        }}
+        onFavorite={(item, isFavorite) => {
+          FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, FLAG_STORE.flag_popular);
+        }}
+      />
     );
   }
 
@@ -104,9 +121,9 @@ class PopularTab extends Component {
     return (
       <View style={styles.container}>
         <FlatList
-          data={store.projectModes}
+          data={store.projectModels}
           renderItem={data => this.renderItem(data)}
-          keyExtractor={item => 't' + item.id}
+          keyExtractor={projectModel => 't' + projectModel.item.id}
           refreshControl={
             <RefreshControl
               title="Loading"
@@ -142,10 +159,10 @@ const mapStateToProps = state => ({
   popular: state.popular,
 });
 const mapDispatchToProps = dispatch => ({
-  onLoadPopularData: (storeName, url, pageSize) =>
-    dispatch(actions.onLoadPopularData(storeName, url, pageSize)),
-  onLoadMorePopular: (storeName, pageIndex, pageSize, items, callback) =>
-    dispatch(actions.onLoadMorePopular(storeName, pageIndex, pageSize, items, callback)),
+  onLoadPopularData: (storeName, url, pageSize, favoriteDao) =>
+    dispatch(actions.onLoadPopularData(storeName, url, pageSize, favoriteDao)),
+  onLoadMorePopular: (storeName, pageIndex, pageSize, items, favoriteDao, callback) =>
+    dispatch(actions.onLoadMorePopular(storeName, pageIndex, pageSize, items, favoriteDao, callback)),
 });
 const PopularTabPage =  connect(mapStateToProps, mapDispatchToProps)(PopularTab);
 

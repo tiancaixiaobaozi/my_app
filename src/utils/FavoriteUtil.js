@@ -1,3 +1,5 @@
+import { FLAG_STORE } from './DataStoreUtil';
+
 export default class FavoriteUtil {
   /**
    * 检查该item是否被收藏
@@ -14,5 +16,23 @@ export default class FavoriteUtil {
       }
     }
     return false;
+  }
+
+  /**
+   * 点击favoriteIcon回调函数
+   * @param favoriteDao
+   * @param item
+   * @param isFavorite
+   * @param flag
+   */
+  static onFavorite(favoriteDao, item, isFavorite, flag) {
+    const key = flag === FLAG_STORE.flag_trending
+      ? item.fullName
+      : item.id.toString();
+    if (isFavorite) {
+      favoriteDao.saveFavoriteItem(key, JSON.stringify(item));
+    } else {
+      favoriteDao.removeFavoriteItem(key);
+    }
   }
 }
