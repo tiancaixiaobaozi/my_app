@@ -4,15 +4,16 @@ import FavoriteUtil from './FavoriteUtil';
 /**
  * 处理数据
  * @param type action的type
- * @param dispatch
- * @param storeName
- * @param data
- * @param pageSize
- * @param favoriteDao
+ * @param dispatch action.dispatch
+ * @param storeName Label名称
+ * @param data 数据源
+ * @param pageSize 页面数据量
+ * @param favoriteDao 收藏的DAO
  */
 export function handleData(type, dispatch, storeName, data, pageSize, favoriteDao) {
   let fixItems = [];
   if (data && data.data) {
+    // 处理popular和trending数据格式差异
     if (Array.isArray(data.data)) {
       fixItems = data && data.data;
     } else if (Array.isArray(data.data.items)) {
@@ -36,9 +37,9 @@ export function handleData(type, dispatch, storeName, data, pageSize, favoriteDa
 
 /**
  * 通过本地的收藏状态包装item
- * @param showItems
- * @param favoriteDao
- * @param callback
+ * @param showItems 当前页面展示的数据源
+ * @param favoriteDao 收藏的DAO
+ * @param callback 回调
  * @return {Promise<void>}
  * @private
  */

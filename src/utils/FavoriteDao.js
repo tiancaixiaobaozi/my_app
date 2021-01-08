@@ -23,7 +23,7 @@ export default class FavoriteDao {
   }
 
   /**
-   * 更新收藏
+   * 更新收藏的key
    * @param key
    * @param isAdd true:收藏 false: 取消
    */

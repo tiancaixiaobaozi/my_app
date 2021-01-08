@@ -10,7 +10,7 @@ export default class DataStore {
   /**
    * 获取数据
    * @param url
-   * @param flag tab模块名
+   * @param flag enum[popular, trending]
    * @return {Promise<R>}
    */
   fetchData(url, flag) {

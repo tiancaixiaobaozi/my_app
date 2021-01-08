@@ -20,10 +20,10 @@ export default class FavoriteUtil {
 
   /**
    * 点击favoriteIcon回调函数
-   * @param favoriteDao
-   * @param item
-   * @param isFavorite
-   * @param flag
+   * @param favoriteDao 收藏的DAO
+   * @param item 数据item
+   * @param isFavorite 是否收藏
+   * @param flag enum[popular/trending]
    */
   static onFavorite(favoriteDao, item, isFavorite, flag) {
     const key = flag === FLAG_STORE.flag_trending

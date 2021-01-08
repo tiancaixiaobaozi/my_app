@@ -19,7 +19,7 @@ const logger = store => next => action => {
 };
 
 const middleware = [
-  logger,
+  // logger,
   thunk,
 ];
 

@@ -122,7 +122,7 @@ class PopularTab extends Component {
       <View style={styles.container}>
         <FlatList
           data={store.projectModels}
-          renderItem={data => this.renderItem(data)}
+          renderItem={projectModel => this.renderItem(projectModel)}
           keyExtractor={projectModel => 't' + projectModel.item.id}
           refreshControl={
             <RefreshControl

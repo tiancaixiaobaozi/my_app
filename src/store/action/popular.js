@@ -22,7 +22,8 @@ export function onLoadPopularData (storeName, url, pageSize, favoriteDao) {
           storeName,
           data,
           pageSize,
-          favoriteDao);
+          favoriteDao
+        );
       })
       .catch(error => {
         console.log(error);
