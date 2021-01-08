@@ -59,7 +59,16 @@ export default class BaseItem extends Component {
   }
 
   /**
-   * 点击收藏按钮
+   * 点击一个item时的回调
+   */
+  onItemClick() {
+    this.props.onSelect(isFavorite => {
+      this.setFavoriteState(isFavorite);
+    });
+  }
+
+  /**
+   * 点击收藏按钮回调
    */
   onPressFavorite() {
     this.setFavoriteState(!this.state.isFavorite);

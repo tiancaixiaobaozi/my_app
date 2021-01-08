@@ -5,6 +5,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import NavigationBar from '../components/NavigationBar';
 import ViewUtil from '../utils/ViewUtil';
 import NavigationUtil from '../utils/NavigationUtil';
+import FavoriteDao from '../utils/FavoriteDao';
 
 const TRENDING_URL = 'https://github.com/';
 const THEME_COLOR = '#678';
@@ -13,13 +14,15 @@ export default class DetailPage extends Component {
   constructor(props) {
     super(props);
     this.params = this.props.navigation.state.params;
-    const { projectModel } = this.params;
-    this.url = projectModel.html_url || TRENDING_URL + projectModel.fullName;
-    const title = projectModel.full_name || projectModel.fullName;
+    const { projectModel, flag } = this.params;
+    this.favoriteDao = new FavoriteDao(flag);
+    this.url = projectModel.item.html_url || TRENDING_URL + projectModel.item.fullName;
+    const title = projectModel.item.full_name || projectModel.item.fullName;
     this.state = {
       title,
       url: this.url,
       canGoBack: false,
+      isFavorite: projectModel.isFavorite,
     };
   }
 
@@ -30,12 +33,37 @@ export default class DetailPage extends Component {
       NavigationUtil.goBack(this.props.navigation);
     }
   }
+  onFavoriteButtonClick() {
+    const { projectModel, callback } = this.params;
+    projectModel.isFavorite = !projectModel.isFavorite;
+    const isFavorite = projectModel.isFavorite;
+    callback(isFavorite); // 通知上级页面收藏状态
+    this.setState({
+      isFavorite,
+    })
+    // tag: fullName收藏问题
+    // let key = projectModel.item.fullName
+    //   ? projectModel.item.fullName
+    //   : projectModel.item.id.toString();
+    let key = projectModel.item.id.toString();
+    if (isFavorite) {
+      this.favoriteDao.saveFavoriteItem(key, JSON.stringify(projectModel.item));
+    } else {
+      this.favoriteDao.removeFavoriteItem(key);
+    }
+  }
 
   renderRightButton() {
     return (
       <View style={{ flexDirection: 'row' }}>
-        <TouchableOpacity onPress={() => {}}>
-          <FontAwesome name={'star-o'} size={20} style={{ color: '#fff', marginRight: 10 }} />
+        <TouchableOpacity onPress={() => {
+          this.onFavoriteButtonClick()
+        }}>
+          <FontAwesome
+            name={this.state.isFavorite ? 'star' : 'star-o'}
+            size={20}
+            style={{ color: '#fff', marginRight: 10 }}
+          />
         </TouchableOpacity>
         {ViewUtil.getShareButton(() => {})}
       </View>
