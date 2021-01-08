@@ -1,6 +1,6 @@
 import  types from '../types';
 import DataStore, { FLAG_STORE } from '../../utils/DataStoreUtil';
-import { _projectModels, handleData} from '../../utils/ActionUtil';
+import { _projectModels, handleData } from '../../utils/ActionUtil';
 
 /**
  * 获取popular数据的action

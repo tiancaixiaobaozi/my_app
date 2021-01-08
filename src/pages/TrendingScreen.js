@@ -19,11 +19,15 @@ import TrendingItem from '../components/TrendingItem';
 import NavigationBar from '../components/NavigationBar';
 import TrendingDialog, { TimeSpans } from '../components/TrendingDialog';
 import NavigationUtil from '../utils/NavigationUtil';
+import FavoriteDao from '../utils/FavoriteDao';
+import { FLAG_STORE } from '../utils/DataStoreUtil';
+import FavoriteUtil from '../utils/FavoriteUtil';
 
 const URL = 'https://github.com/trending/';
 const THEME_COLOR = '#678';
 const PAGE_SIZE = 10;
 const EVENT_TYPE_TIMESPAN_CHANGE = 'EVENT_TYPE_TIMESPAN_CHANGE';
+const favoriteDao = new FavoriteDao(FLAG_STORE.flag_trending);
 
 class TrendingTab extends Component {
   constructor(props) {
@@ -56,12 +60,19 @@ class TrendingTab extends Component {
     const store = this._store();
     const url = this.genFetchUrl(this.storeName);
     if (loadMore) {
-      onLoadMoreTrending(this.storeName, ++store.pageIndex, PAGE_SIZE, store.items, callback => {
-        // 没有更多了，进入回调函数
-        this.refs.toast.show('没有更多了~', 3000);
-      });
+      onLoadMoreTrending(
+        this.storeName,
+        ++store.pageIndex,
+        PAGE_SIZE,
+        store.items,
+        favoriteDao,
+        callback => {
+          // 没有更多了，进入回调函数
+          this.refs.toast.show('没有更多了~', 3000);
+        }
+      );
     } else {
-      onLoadTrendingData(this.storeName, url, PAGE_SIZE);
+      onLoadTrendingData(this.storeName, url, PAGE_SIZE, favoriteDao);
     }
   }
 
@@ -100,11 +111,17 @@ class TrendingTab extends Component {
   renderItem(data) {
     const item = data.item;
     return (
-      <TrendingItem item={item} onSelect={() => {
-        NavigationUtil.goPage('DetailPage', {
-          projectModel: item,
-        });
-      }} />
+      <TrendingItem
+        projectModel={item}
+        onSelect={() => {
+          NavigationUtil.goPage('DetailPage', {
+            projectModel: item,
+          });
+        }}
+        onFavorite={(item, isFavorite) => {
+          FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, FLAG_STORE.flag_trending);
+        }}
+      />
     );
   }
 
@@ -128,8 +145,8 @@ class TrendingTab extends Component {
       <View style={styles.container}>
         <FlatList
           data={store.projectModels}
-          renderItem={data => this.renderItem(data)}
-          keyExtractor={item => 't' + (item.fullName || item.id)}
+          renderItem={projectModel => this.renderItem(projectModel)}
+          keyExtractor={projectModel => 't' + (projectModel.item.fullName || projectModel.item.id)}
           refreshControl={
             <RefreshControl
               title="Loading"
@@ -165,10 +182,10 @@ const mapStateToProps = state => ({
   trending: state.trending,
 });
 const mapDispatchToProps = dispatch => ({
-  onLoadTrendingData: (storeName, url, pageSize) =>
-    dispatch(actions.onLoadTrendingData(storeName, url, pageSize)),
-  onLoadMoreTrending: (storeName, pageIndex, pageSize, items, callback) =>
-    dispatch(actions.onLoadMoreTrending(storeName, pageIndex, pageSize, items, callback)),
+  onLoadTrendingData: (storeName, url, pageSize, favoriteDao) =>
+    dispatch(actions.onLoadTrendingData(storeName, url, pageSize, favoriteDao)),
+  onLoadMoreTrending: (storeName, pageIndex, pageSize, items, favoriteDao, callback) =>
+    dispatch(actions.onLoadMoreTrending(storeName, pageIndex, pageSize, items, favoriteDao, callback)),
 });
 const TrendingTabPage =  connect(mapStateToProps, mapDispatchToProps)(TrendingTab);
 

@@ -1,21 +1,29 @@
 import  types from '../types';
 import DataStore, { FLAG_STORE } from '../../utils/DataStoreUtil';
-import { handleData } from '../../utils/ActionUtil';
+import { _projectModels, handleData } from '../../utils/ActionUtil';
 
 /**
  * 获取trending数据的action
  * @param storeName
  * @param url
  * @param pageSize
+ * @param favoriteDao
  * @return {function(...[*]=)}
  */
-export function onLoadTrendingData (storeName, url, pageSize) {
+export function onLoadTrendingData (storeName, url, pageSize, favoriteDao) {
   return dispatch => {
     dispatch({ type: types.TRENDING_REFRESH, storeName });
     let dataStore = new DataStore();
     dataStore.fetchData(url, FLAG_STORE.flag_trending)
       .then(data => {
-        handleData(types.TRENDING_REFRESH_SUCCESS, dispatch, storeName, data, pageSize);
+        handleData(
+          types.TRENDING_REFRESH_SUCCESS,
+          dispatch,
+          storeName,
+          data,
+          pageSize,
+          favoriteDao
+        );
       })
       .catch(error => {
         console.log(error);
@@ -30,6 +38,7 @@ export function onLoadTrendingData (storeName, url, pageSize) {
  * @param pageIndex 页码
  * @param pageSize 每页展示数据量
  * @param dataArray 数据源
+ * @param favoriteDao
  * @param callback  回调
  * @return {function(...[*]=)}
  */
@@ -38,8 +47,10 @@ export function onLoadMoreTrending(
   pageIndex,
   pageSize,
   dataArray = [],
+  favoriteDao,
   callback) {
   return dispatch => {
+    // 模拟网络请求
     setTimeout(() => {
       if ((pageIndex - 1) * pageSize >= dataArray.length) {
         if (typeof callback === 'function') {
@@ -50,20 +61,21 @@ export function onLoadMoreTrending(
           error: 'no more',
           storeName,
           pageIndex: --pageIndex,
-          projectModels: dataArray,
         })
       } else {
         // 本次和载入的最大数量
         let max = pageSize * pageIndex > dataArray.length
           ? dataArray.length
           : pageSize * pageIndex;
-        dispatch({
-          type: types.TRENDING_REFRESH_SUCCESS,
-          storeName,
-          pageIndex,
-          projectModels: dataArray.slice(0, max),
+        _projectModels(dataArray.slice(0, max), favoriteDao, projectModels => {
+          dispatch({
+            type: types.TRENDING_REFRESH_SUCCESS,
+            storeName,
+            pageIndex,
+            projectModels,
+          })
         })
       }
-    }, 500)
+    }, 3000)
   }
 }

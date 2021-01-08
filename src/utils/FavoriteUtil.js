@@ -26,9 +26,11 @@ export default class FavoriteUtil {
    * @param flag enum[popular/trending]
    */
   static onFavorite(favoriteDao, item, isFavorite, flag) {
-    const key = flag === FLAG_STORE.flag_trending
-      ? item.fullName
-      : item.id.toString();
+    // tag: 使用fullName导致checkFavorite方法无法遍历key
+    // const key = flag === FLAG_STORE.flag_trending
+    //   ? item.fullName
+    //   : item.id.toString();
+    const key = item.id.toString();
     if (isFavorite) {
       favoriteDao.saveFavoriteItem(key, JSON.stringify(item));
     } else {

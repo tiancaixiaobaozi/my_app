@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, TouchableOpacity, Text, Image, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import HtmlView from 'react-native-htmlview';
 import BaseItem from './BaseItem';
 
