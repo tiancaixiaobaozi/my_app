@@ -2,6 +2,7 @@ import React from 'react';
 import { createAppContainer } from 'react-navigation';
 import { createBottomTabNavigator, BottomTabBar } from 'react-navigation-tabs';
 import { connect } from 'react-redux';
+import EventBus from 'react-native-event-bus';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import EntIcon from 'react-native-vector-icons/Entypo';
@@ -9,6 +10,7 @@ import PopularScreen from '../pages/PopularScreen';
 import TrendingScreen from '../pages/TrendingScreen';
 import FavoriteScreen from '../pages/FavoriteScreen';
 import MyScreen from '../pages/MyScreen';
+import EventTypes from '../utils/EventTypes';
 
 // 在这里配置页面的路由
 const TABS = {
@@ -71,18 +73,26 @@ class DynamicTabNavigator extends React.Component {
     const { PopularPage, TrendingPage, FavoritePage, MyPage } = TABS;
     const tabs = { PopularPage, TrendingPage, FavoritePage, MyPage };
     // PopularPage.navigationOptions.tabBarLabel = '动态'; // 动态修改tab属性
-    return this.Tabs = createAppContainer(createBottomTabNavigator(
+    this.Tabs = createAppContainer(createBottomTabNavigator(
       tabs,
       {
         tabBarComponent: props => {
-          return <TabBarComponent {...props} theme={this.props.theme} />
+          return <TabBarComponent {...props} theme={this.props.theme} />;
         },
       }
     ));
+    return this.Tabs;
   }
   render() {
     const Tab = this._tabNavigator();
-    return <Tab />;
+    return <Tab
+      onNavigationStateChange={(prevState, newState, action) => {
+        EventBus.getInstance().fireEvent(EventTypes.BOTTOM_TAB_SELECT, {
+          from: prevState.index,
+          to: newState.index,
+        });
+      }}
+    />;
   }
 }
 

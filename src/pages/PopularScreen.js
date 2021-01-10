@@ -5,12 +5,14 @@ import actions from '../store/action';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { createAppContainer } from 'react-navigation';
 import Toast from 'react-native-easy-toast';
+import EventBus from 'react-native-event-bus';
 import PopularItem from '../components/PopularItem';
 import NavigationBar from '../components/NavigationBar';
 import NavigationUtil from '../utils/NavigationUtil';
 import FavoriteDao from '../utils/FavoriteDao';
 import { FLAG_STORE } from '../utils/DataStoreUtil';
 import FavoriteUtil from '../utils/FavoriteUtil';
+import EventTypes from '../utils/EventTypes';
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
@@ -23,17 +25,27 @@ class PopularTab extends Component {
     super(props);
     const { tabLabel } = this.props;
     this.storeName = tabLabel;
+    this.isFavoriteChanged = false;
   }
   componentDidMount() {
     this.loadData();
+    EventBus.getInstance().addListener(EventTypes.FAVORITE_CHANGED_POPULAR, this.favoriteListener = () => {
+      this.isFavoriteChanged = true;
+    });
+    EventBus.getInstance().addListener(EventTypes.BOTTOM_TAB_SELECT, this.bottomListener = data => {
+      if (data.to === 0 && this.isFavoriteChanged) {
+        this.loadData(null, true);
+      }
+    });
   }
 
   /**
    * 加载数据
    * @param loadMore
+   * @param refreshFavorite 是否刷新收藏状态
    */
-  loadData(loadMore) {
-    const { onLoadPopularData, onLoadMorePopular } = this.props;
+  loadData(loadMore, refreshFavorite) {
+    const { onLoadPopularData, onLoadMorePopular, onFlushPopularFavorite } = this.props;
     const store = this._store();
     const url = this.genFetchUrl(this.storeName);
     if (loadMore) {
@@ -48,6 +60,8 @@ class PopularTab extends Component {
           this.refs.toast.show('没有更多了~', 3000);
         }
       );
+    } else if (refreshFavorite) {
+      onFlushPopularFavorite(this.storeName, store.pageIndex, PAGE_SIZE, store.items, favoriteDao);
     } else {
       onLoadPopularData(this.storeName, url, PAGE_SIZE, favoriteDao);
     }
@@ -165,6 +179,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch(actions.onLoadPopularData(storeName, url, pageSize, favoriteDao)),
   onLoadMorePopular: (storeName, pageIndex, pageSize, items, favoriteDao, callback) =>
     dispatch(actions.onLoadMorePopular(storeName, pageIndex, pageSize, items, favoriteDao, callback)),
+  onFlushPopularFavorite: (storeName, pageIndex, pageSize, items, favoriteDao) =>
+    dispatch(actions.onFlushPopularFavorite(storeName, pageIndex, pageSize, items, favoriteDao)),
 });
 const PopularTabPage =  connect(mapStateToProps, mapDispatchToProps)(PopularTab);
 

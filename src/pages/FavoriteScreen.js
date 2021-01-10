@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { FlatList, StyleSheet, View, RefreshControl, ActivityIndicator } from 'react-native';
+import { FlatList, StyleSheet, View, RefreshControl } from 'react-native';
 import { connect } from 'react-redux';
 import actions from '../store/action';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { createAppContainer } from 'react-navigation';
 import Toast from 'react-native-easy-toast';
+import EventBus from 'react-native-event-bus';
 import PopularItem from '../components/PopularItem';
 import NavigationBar from '../components/NavigationBar';
 import NavigationUtil from '../utils/NavigationUtil';
@@ -12,11 +13,9 @@ import FavoriteDao from '../utils/FavoriteDao';
 import { FLAG_STORE } from '../utils/DataStoreUtil';
 import FavoriteUtil from '../utils/FavoriteUtil';
 import TrendingItem from '../components/TrendingItem';
+import EventTypes from '../utils/EventTypes';
 
-const URL = 'https://api.github.com/search/repositories?q=';
-const QUERY_STR = '&sort=stars';
 const THEME_COLOR = '#678';
-const PAGE_SIZE = 10;
 const favoriteDao = new FavoriteDao(FLAG_STORE.flag_popular);
 
 class FavoriteTab extends Component {
@@ -27,12 +26,20 @@ class FavoriteTab extends Component {
     this.favoriteDao = new FavoriteDao(flag);
   }
   componentDidMount() {
-    this.loadData();
+    this.loadData(true);
+    EventBus.getInstance().addListener(EventTypes.BOTTOM_TAB_SELECT, this.listener = data => {
+      if (data.to === 2) {
+        this.loadData(false);
+      }
+    });
+  }
+  componentWillUnmount() {
+    EventBus.getInstance().removeListener(this.listener);
   }
 
   /**
    * 加载数据
-   * @param loadMore
+   * @param isShowLoading
    */
   loadData(isShowLoading) {
     const { onLoadFavoriteData } = this.props;
@@ -70,15 +77,27 @@ class FavoriteTab extends Component {
         onSelect={callback => {
           NavigationUtil.goPage('DetailPage', {
             projectModel: item,
-            flag: FLAG_STORE.flag_popular,
+            flag: this.storeName,
             callback,
           });
         }}
-        onFavorite={(item, isFavorite) => {
-          FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, FLAG_STORE.flag_popular);
-        }}
+        onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
       />
     );
+  }
+
+  /**
+   * 在收藏页面点击收藏，并且发送相应的收藏事件
+   * @param item
+   * @param isFavorite
+   */
+  onFavorite(item, isFavorite) {
+    FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, this.props.flag);
+    if (this.storeName === FLAG_STORE.flag_popular) {
+      EventBus.getInstance().fireEvent(EventTypes.FAVORITE_CHANGED_POPULAR);
+    } else {
+      EventBus.getInstance().fireEvent(EventTypes.FAVORITE_CHANGED_TRENDING);
+    }
   }
 
   render() {
