@@ -40,7 +40,7 @@ export default class DetailPage extends Component {
     callback(isFavorite); // 通知上级页面收藏状态
     this.setState({
       isFavorite,
-    })
+    });
     // tag: fullName收藏问题
     // let key = projectModel.item.fullName
     //   ? projectModel.item.fullName
@@ -57,7 +57,7 @@ export default class DetailPage extends Component {
     return (
       <View style={{ flexDirection: 'row' }}>
         <TouchableOpacity onPress={() => {
-          this.onFavoriteButtonClick()
+          this.onFavoriteButtonClick();
         }}>
           <FontAwesome
             name={this.state.isFavorite ? 'star' : 'star-o'}

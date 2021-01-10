@@ -117,7 +117,7 @@ class TrendingTab extends Component {
           NavigationUtil.goPage('DetailPage', {
             projectModel: item,
             flag: FLAG_STORE.flag_trending,
-            callback
+            callback,
           });
         }}
         onFavorite={(item, isFavorite) => {
@@ -285,7 +285,7 @@ export default class TrendingScreen extends Component {
   }
 
   render() {
-    let barStyle={
+    let barStyle = {
       backgroundColor: THEME_COLOR,
       barStyle: 'light-content',
     };

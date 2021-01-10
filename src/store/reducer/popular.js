@@ -61,7 +61,7 @@ export default function onAction(state = defaultState, action) {
           projectModels: action.projectModels,
           hideLoadingMore: false,
           pageIndex: action.pageIndex,
-        }
+        },
       };
     case types.POPULAR_LOAD_MORE_FAIL:
       // 下拉加载更多失败
@@ -71,7 +71,7 @@ export default function onAction(state = defaultState, action) {
           ...state[action.storeName],
           hideLoadingMore: true,
           pageIndex: action.pageIndex,
-        }
+        },
       };
     default:
       return state;

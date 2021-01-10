@@ -54,14 +54,14 @@ export function onLoadMorePopular(
     setTimeout(() => {
       if ((pageIndex - 1) * pageSize >= dataArray.length) {
         if (typeof callback === 'function') {
-          callback('no more')
+          callback('no more');
         }
         dispatch({
           type: types.POPULAR_LOAD_MORE_FAIL,
           error: 'no more',
           storeName,
           pageIndex: --pageIndex,
-        })
+        });
       } else {
         // 本次和载入的最大数量
         let max = pageSize * pageIndex > dataArray.length
@@ -73,9 +73,9 @@ export function onLoadMorePopular(
             storeName,
             pageIndex,
             projectModels,
-          })
-        })
+          });
+        });
       }
-    }, 3000)
-  }
+    }, 3000);
+  };
 }

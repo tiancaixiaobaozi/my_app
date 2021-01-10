@@ -15,15 +15,15 @@ export default class FetchDemoPage extends React.Component {
     let url = `https://api.github.com/search/repositories?q=${this.value}`;
     this.dataStore.fetchData(url)
       .then(res => {
-        const { timestamp, data } = res
+        const { timestamp, data } = res;
         let showData = `初次数据加载时间${new Date(timestamp)}\n${JSON.stringify(data)}`;
         this.setState({
           showText: showData,
-        })
+        });
       })
       .catch(e => {
         e && console.log(e.toString());
-      })
+      });
   }
 
   render() {
@@ -40,7 +40,7 @@ export default class FetchDemoPage extends React.Component {
         </View>
         <Text>{this.state.showText}</Text>
       </ScrollView>
-    )
+    );
   }
 }
 

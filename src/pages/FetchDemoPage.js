@@ -10,35 +10,35 @@ export default class FetchDemoPage extends React.Component {
   }
   // 请求数据
   loadData() {
-    let url = `https://api.github.com/search/repositories?q=java`;
+    let url = 'https://api.github.com/search/repositories?q=java';
     fetch(url)
       .then(response => response.text())
       .then(responseText => {
         this.setState({
           showText: responseText,
-        })
-      })
+        });
+      });
   }
   // 模拟错误请求
   loadDataError() {
-    let url = `https://api.github.com/search/repositories?q=java`;
+    let url = 'https://api.github.com/search/repositories?q=java';
     fetch(url)
       .then(response => {
-        if(response.ok && false) {
-          return response.text()
+        if (response.ok && false) {
+          return response.text();
         }
-        throw new Error('Network error!!!')
+        throw new Error('Network error!!!');
       })
       .then(responseText => {
         this.setState({
           showText: responseText,
-        })
+        });
       })
       .catch(e => {
         this.setState({
           showText: e.toString(),
-        })
-      })
+        });
+      });
   }
 
   render() {
@@ -58,7 +58,7 @@ export default class FetchDemoPage extends React.Component {
         </View>
         <Text>{this.state.showText}</Text>
       </View>
-    )
+    );
   }
 }
 

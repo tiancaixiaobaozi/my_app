@@ -47,7 +47,7 @@ class PopularTab extends Component {
           // 没有更多了，进入回调函数
           this.refs.toast.show('没有更多了~', 3000);
         }
-      )
+      );
     } else {
       onLoadPopularData(this.storeName, url, PAGE_SIZE, favoriteDao);
     }
@@ -66,7 +66,7 @@ class PopularTab extends Component {
         isLoading: false,
         projectModels: [],
         hideLoadingMore: true,
-      }
+      };
     }
     return store;
   }
@@ -94,8 +94,8 @@ class PopularTab extends Component {
           NavigationUtil.goPage('DetailPage', {
             projectModel: item,
             flag: FLAG_STORE.flag_popular,
-            callback
-          })
+            callback,
+          });
         }}
         onFavorite={(item, isFavorite) => {
           FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, FLAG_STORE.flag_popular);
@@ -115,7 +115,7 @@ class PopularTab extends Component {
         <View style={styles.indicatorContainer}>
           <ActivityIndicator style={styles.indicator} color="orange" />
         </View>
-      )
+      );
   }
 
   render() {
@@ -186,10 +186,10 @@ export default class PopularScreen extends Component {
     return tabs;
   }
   render() {
-    let barStyle={
+    let barStyle = {
       backgroundColor: THEME_COLOR,
       barStyle: 'light-content',
-    }
+    };
     let navigationBar = <NavigationBar
       title="最热"
       statusBar={barStyle}
@@ -245,5 +245,5 @@ const styles = StyleSheet.create({
   },
   indicator: {
     margin: 10,
-  }
+  },
 });
