@@ -79,3 +79,32 @@ export function onLoadMoreTrending(
     }, 3000);
   };
 }
+
+/**
+ * 刷新趋势页面的数据的收藏状态
+ * @param storeName label
+ * @param pageIndex 页码
+ * @param pageSize  条数
+ * @param dataArray 数据源
+ * @param favoriteDao
+ */
+export function onFlushTrendingFavorite(
+  storeName,
+  pageIndex,
+  pageSize,
+  dataArray = [],
+  favoriteDao) {
+  return dispatch => {
+    let max = pageSize * pageIndex > dataArray.length
+      ? dataArray.length
+      : pageSize * pageIndex;
+    _projectModels(dataArray.slice(0, max), favoriteDao, projectModels => {
+      dispatch({
+        type: types.FLUSH_TRENDING_FAVORITE,
+        storeName,
+        pageIndex,
+        projectModels,
+      });
+    });
+  };
+}

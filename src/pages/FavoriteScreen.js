@@ -16,7 +16,6 @@ import TrendingItem from '../components/TrendingItem';
 import EventTypes from '../utils/EventTypes';
 
 const THEME_COLOR = '#678';
-const favoriteDao = new FavoriteDao(FLAG_STORE.flag_popular);
 
 class FavoriteTab extends Component {
   constructor(props) {
@@ -92,7 +91,7 @@ class FavoriteTab extends Component {
    * @param isFavorite
    */
   onFavorite(item, isFavorite) {
-    FavoriteUtil.onFavorite(favoriteDao, item, isFavorite, this.props.flag);
+    FavoriteUtil.onFavorite(this.favoriteDao, item, isFavorite, this.props.flag);
     if (this.storeName === FLAG_STORE.flag_popular) {
       EventBus.getInstance().fireEvent(EventTypes.FAVORITE_CHANGED_POPULAR);
     } else {

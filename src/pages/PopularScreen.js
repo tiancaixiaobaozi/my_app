@@ -38,6 +38,10 @@ class PopularTab extends Component {
       }
     });
   }
+  componentWillUnmount() {
+    EventBus.getInstance().removeListener(this.favoriteListener);
+    EventBus.getInstance().removeListener(this.bottomListener);
+  }
 
   /**
    * 加载数据
