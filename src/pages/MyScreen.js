@@ -1,16 +1,25 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import { connect } from 'react-redux';
 import IconFeather from 'react-native-vector-icons/Feather';
-import IconIonicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import actions from '../store/action';
 import NavigationUtil from '../utils/NavigationUtil';
 import NavigationBar from '../components/NavigationBar';
+import { MORE_MENU } from '../config/MORE_MENU';
+import GlobalStyles from '../res/GlobalStyles';
+import ViewUtil from '../utils/ViewUtil';
 
 const THEME_COLOR = '#678';
-type Props = {};
 
-class MyScreen extends Component<Props> {
+class MyScreen extends Component {
   constructor(props) {
     super(props);
   }
@@ -26,13 +35,26 @@ class MyScreen extends Component<Props> {
       </View>
     );
   }
-
   getLeftButton(callback) {
     return (
       <TouchableOpacity style={{ padding: 8, marginLeft: 8 }} onPress={callback}>
-        <IconIonicons name="ios-arrow-back" size={26} style={{ color: '#fff' }} />
+        <Ionicons name="ios-arrow-back" size={26} style={{ color: '#fff' }} />
       </TouchableOpacity>
     );
+  }
+
+  /**
+   * 点击菜单
+   * @param menu
+   */
+  onClick(menu) {}
+
+  /**
+   * 生成菜单组件
+   * @param menu
+   */
+  getItem(menu) {
+    return ViewUtil.getMenuItem(() => this.onClick(menu), menu, THEME_COLOR);
   }
 
   render() {
@@ -50,28 +72,55 @@ class MyScreen extends Component<Props> {
       />
     );
     return (
-      <View style={{ flex: 1 }}>
+      <View style={GlobalStyles.root_container}>
         {navigationBar}
-        <View style={styles.container}>
-          <View>
-            <Text style={styles.welcome}>MyScreen</Text>
-            <Button title="跳转详情" onPress={() => {
-              NavigationUtil.goPage('DetailPage');
-            }} />
-            <Button title="跳转Fetch" onPress={() => {
-              NavigationUtil.goPage('FetchDemoPage');
-            }} />
-            <Button title="跳转Storage" onPress={() => {
-              NavigationUtil.goPage('AsyncStoragePage');
-            }} />
-            <Button title="离线缓存" onPress={() => {
-              NavigationUtil.goPage('DataStorePage');
-            }} />
-          </View>
-          <Button title="修改红色主题" onPress={() => this.props.handleThemeChange('red')} />
-          <Button title="修改绿色主题" onPress={() => this.props.handleThemeChange('green')} />
-          <Button title="修改橘色主题" onPress={() => this.props.handleThemeChange('orange')} />
-        </View>
+        <ScrollView>
+          <TouchableOpacity style={styles.item} onPress={() => this.onClick(MORE_MENU.About)}>
+            <View style={styles.about_left}>
+              <Ionicons
+                name={MORE_MENU.About.icon}
+                size={40}
+                style={{ marginRight: 10, color: THEME_COLOR }}
+              />
+              <Text>Github Popular</Text>
+            </View>
+            <Ionicons
+              name={'ios-arrow-forward'}
+              size={16}
+              style={{ marginRight: 10, alignSelf: 'center', color: THEME_COLOR }}
+            />
+          </TouchableOpacity>
+          <View style={GlobalStyles.line} />
+          {/*教程*/}
+          {this.getItem(MORE_MENU.Tutorial)}
+
+          <Text style={styles.group_title}>趋势管理</Text>
+          {/*自定义语言*/}
+          {this.getItem(MORE_MENU.Custom_Language)}
+          {/*语言排序*/}
+          <View style={GlobalStyles.line} />
+          {this.getItem(MORE_MENU.Sort_Language)}
+
+          <Text style={styles.group_title}>最热管理</Text>
+          {/*自定义标签*/}
+          {this.getItem(MORE_MENU.Custom_Key)}
+          {/*标签排序*/}
+          <View style={GlobalStyles.line} />
+          {this.getItem(MORE_MENU.Sort_Key)}
+          {/*标签移除*/}
+          <View style={GlobalStyles.line} />
+          {this.getItem(MORE_MENU.Remove_Key)}
+
+          <Text style={styles.group_title}>设置</Text>
+          {/*自定义主题*/}
+          {this.getItem(MORE_MENU.Custom_Theme)}
+          {/*关于作者*/}
+          <View style={GlobalStyles.line} />
+          {this.getItem(MORE_MENU.About_Author)}
+          {/*反馈*/}
+          <View style={GlobalStyles.line} />
+          {this.getItem(MORE_MENU.Feedback)}
+        </ScrollView>
       </View>
     );
   }
@@ -85,25 +134,22 @@ export default connect(null, mapDispatchToProps)(MyScreen);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5fcff',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  tabStyle: {
-    minWidth: 50,
-  },
-  indicatorStyle: {
-    height: 2,
+  item: {
     backgroundColor: '#fff',
+    padding: 10,
+    height: 90,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
   },
-  labelStyle: {
-    fontSize: 13,
-    marginTop: 6,
-    marginBottom: 6,
+  about_left: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  group_title: {
+    margin: 10,
+    fontSize: 12,
+    color: 'gray',
   },
 });
