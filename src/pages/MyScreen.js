@@ -47,7 +47,21 @@ class MyScreen extends Component {
    * 点击菜单
    * @param menu
    */
-  onClick(menu) {}
+  onClick(menu) {
+    let RouteName, params = {};
+    switch (menu) {
+      case MORE_MENU.Tutorial:
+        RouteName = 'WebViewPage';
+        params.title = '教程';
+        params.url = 'https://github.com/tiancaixiaobaozi';
+        break;
+      default:
+        break;
+    }
+    if (RouteName) {
+      NavigationUtil.goPage(RouteName, params);
+    }
+  }
 
   /**
    * 生成菜单组件
