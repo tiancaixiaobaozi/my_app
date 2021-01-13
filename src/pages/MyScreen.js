@@ -14,34 +14,12 @@ import actions from '../store/action';
 import NavigationUtil from '../utils/NavigationUtil';
 import NavigationBar from '../components/NavigationBar';
 import { MORE_MENU } from '../config/MORE_MENU';
-import GlobalStyles from '../res/GlobalStyles';
+import GlobalStyles from '../res/style/GlobalStyles';
 import ViewUtil from '../utils/ViewUtil';
 
 const THEME_COLOR = '#678';
 
 class MyScreen extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  getRightButton() {
-    return (
-      <View style={{ flexDirection: 'row' }}>
-        <TouchableOpacity onPress={() => {}}>
-          <View style={{ padding: 5, marginRight: 8 }}>
-            <IconFeather name="search" size={24} style={{ color: '#fff' }} />
-          </View>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-  getLeftButton(callback) {
-    return (
-      <TouchableOpacity style={{ padding: 8, marginLeft: 8 }} onPress={callback}>
-        <Ionicons name="ios-arrow-back" size={26} style={{ color: '#fff' }} />
-      </TouchableOpacity>
-    );
-  }
 
   /**
    * 点击菜单
@@ -54,6 +32,9 @@ class MyScreen extends Component {
         RouteName = 'WebViewPage';
         params.title = '教程';
         params.url = 'https://github.com/tiancaixiaobaozi';
+        break;
+      case MORE_MENU.About:
+        RouteName = 'AboutPage';
         break;
       default:
         break;
@@ -81,8 +62,6 @@ class MyScreen extends Component {
         title="我的"
         statusBar={statusBar}
         style={{ backgroundColor: THEME_COLOR }}
-        rightButton={this.getRightButton()}
-        leftButton={this.getLeftButton()}
       />
     );
     return (

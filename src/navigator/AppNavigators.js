@@ -7,6 +7,7 @@ import FetchDemoPage from '../pages/FetchDemoPage';
 import AsyncStoragePage from '../pages/AsyncStoragePage';
 import DataStorePage from '../pages/DataStorePage';
 import WebViewPage from '../pages/WebViewPage';
+import AboutPage from '../pages/AboutPage';
 
 const InitNavigator = createStackNavigator(
   {
@@ -35,6 +36,12 @@ const MainNavigator = createStackNavigator(
     },
     WebViewPage: {
       screen: WebViewPage,
+      navigationOptions: {
+        headerShown: false,
+      },
+    },
+    AboutPage: {
+      screen: AboutPage,
       navigationOptions: {
         headerShown: false,
       },
