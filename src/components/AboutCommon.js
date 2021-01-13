@@ -61,7 +61,7 @@ export default class AboutCommon {
     config.renderBackground = () => (
       <View key={'background'}>
         <Image source={{
-          uri: params.backgroundImage,
+          uri: params.backgroundImg,
           width: window.width,
           height: PARALLAX_HEADER_HEIGHT, }}
         />

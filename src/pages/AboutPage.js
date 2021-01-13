@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, Linking } from 'react-native';
 import NavigationUtil from '../utils/NavigationUtil';
 import { MORE_MENU } from '../config/MORE_MENU';
 import GlobalStyles from '../res/style/GlobalStyles';
@@ -20,7 +20,7 @@ export default class AboutPage extends Component {
     this.aboutCommon = new AboutCommon({
       ...this.params,
       navigation: this.props.navigation,
-      flagAbout: FLAG_ABOUT.flag_about_me,
+      flagAbout: FLAG_ABOUT.flag_about,
     }, data => this.setState({...data}));
     // aboutCommon 里面网络为请求配置，在这里预设置一个本地json_config
     this.state = {
@@ -39,6 +39,23 @@ export default class AboutPage extends Component {
         RouteName = 'WebViewPage';
         params.title = '教程';
         params.url = 'https://github.com/tiancaixiaobaozi';
+        break;
+      case MORE_MENU.About_Author:
+        RouteName = 'AboutMePage';
+        break;
+      case MORE_MENU.Feedback:
+        let url = 'mailto://mydoge@vip.qq.com';
+        Linking.canOpenURL(url)
+          .then(support => {
+            if (!support) {
+              console.log('无法发送邮件')
+            } else {
+              Linking.openURL(url);
+            }
+          })
+          .catch(e => {
+            console.error(e);
+          });
         break;
       default:
         break;

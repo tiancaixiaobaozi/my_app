@@ -36,6 +36,9 @@ class MyScreen extends Component {
       case MORE_MENU.About:
         RouteName = 'AboutPage';
         break;
+      case MORE_MENU.About_Author:
+        RouteName = 'AboutMePage';
+        break;
       default:
         break;
     }
