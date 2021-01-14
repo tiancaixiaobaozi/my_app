@@ -12,7 +12,6 @@ import GlobalStyles from '../res/style/GlobalStyles';
 import NavigationUtil from '../utils/NavigationUtil';
 import ArrayUtil from '../utils/ArrayUtil';
 
-
 const THEME_COLOR = '#678';
 
 class CustomKeyPage extends Component {
@@ -27,7 +26,7 @@ class CustomKeyPage extends Component {
     this.languageDao = new LanguageDao(this.params.flag);
     this.state = {
       keys: [],
-    }
+    };
   }
   componentDidMount() {
     this.backPress.componentDidMount();
@@ -38,13 +37,14 @@ class CustomKeyPage extends Component {
     }
     this.setState({
       keys: CustomKeyPage._keys(this.props),
-    })
+    });
   }
+  // 从props中获取state
   static getDerivedStateFromProps(nextProps, prevState) {
     if (prevState.keys !== CustomKeyPage._keys(nextProps, null, prevState)) {
       return {
         keys: CustomKeyPage._keys(nextProps, null, prevState),
-      }
+      };
     }
     return null;
   }
@@ -52,6 +52,14 @@ class CustomKeyPage extends Component {
     this.backPress.componentWillUnmount();
   }
 
+  /**
+   * 获取标签
+   * @param props this.props
+   * @param original 移除标签时使用，是否从props获取原始对的标签
+   * @param state 移除标签时使用
+   * @returns {*}
+   * @private
+   */
   static _keys(props, original, state) {
     const { flag, isRemoveKey } = props.navigation.state.params;
     let key = flag === FLAG_LANGUAGE.flag_key ? 'keys' : 'languages';
@@ -65,7 +73,7 @@ class CustomKeyPage extends Component {
             // 不直接修改props, copy一份
             ...val,
             checked: false,
-          }
+          };
         });
     } else {
       return props.language[key];
@@ -86,15 +94,15 @@ class CustomKeyPage extends Component {
           text: '否',
           onPress: () => {
             NavigationUtil.goBack(this.props.navigation);
-          }
+          },
         },
         {
           text: '是',
           onPress: () => {
             this.onSave();
-          }
+          },
         },
-      ])
+      ]);
     } else {
       NavigationUtil.goBack(this.props.navigation);
     }
@@ -108,21 +116,63 @@ class CustomKeyPage extends Component {
       NavigationUtil.goBack(this.props.navigation);
       return;
     }
+    let keys;
     if (this.isRemoveKey) {
       // 移除标签
-      let keys;
       for (let i = 0, l = this.changeValues.length; i < l; i++) {
-        ArrayUtil.remove(
-          keys = CustomKeyPage._keys(this.props, true),
-          this.changeValues[i],
-          '')
+        ArrayUtil.remove(keys = CustomKeyPage._keys(this.props, true), this.changeValues[i], 'name');
       }
-    //  TODO
     }
-    this.languageDao.save(this.state.keys); // 更新本地数据
+    this.languageDao.save(keys || this.state.keys); // 更新本地数据
     const { onLoadLanguage } = this.props;
     onLoadLanguage(this.params.flag); // 更新store
     NavigationUtil.goBack(this.props.navigation);
+  }
+
+  /**
+   * 生成checkbox图标
+   * @param checked
+   * @return {*}
+   * @private
+   */
+  _checkedImage(checked) {
+    return <Ionicons
+      name={checked ? 'ios-checkbox' : 'md-square-outline'}
+      size={20}
+      style={{ color: THEME_COLOR }}
+    />;
+  }
+
+  /**
+   * 渲染checkbox组件
+   * @param data
+   * @param index
+   * @return {*}
+   */
+  renderCheckBox(data, index) {
+    return <CheckBox
+      style={{ flex: 1, padding: 10 }}
+      onClick={() => this.onClick(data, index)}
+      isChecked={data.checked}
+      rightText={data.name}
+      checkedImage={this._checkedImage(true)}
+      unCheckedImage={this._checkedImage(false)}
+    />;
+  }
+
+  /**
+   * 点击checkbox
+   * @param data
+   * @param index
+   */
+  onClick(data, index) {
+    data.checked = !data.checked;
+    ArrayUtil.updateArray(this.changeValues, data);
+    this.state.keys[index] = data;
+    //更新state显示选中状态
+    this.setState({
+      keys: this.state.keys,
+    });
   }
   renderView() {
     let dataArray = this.state.keys;
@@ -138,55 +188,9 @@ class CustomKeyPage extends Component {
           </View>
           <View style={GlobalStyles.line} />
         </View>
-      )
+      );
     }
     return views;
-  }
-
-  /**
-   * 生成checkbox图标
-   * @param checked
-   * @return {*}
-   * @private
-   */
-  _checkedImage(checked) {
-    return <Ionicons
-      name={checked ? 'ios-checkbox' : 'md-square-outline'}
-      size={20}
-      style={{ color: THEME_COLOR }}
-    />
-  }
-
-  /**
-   * 渲染checkbox组件
-   * @param data
-   * @param index
-   * @return {*}
-   */
-  renderCheckBox(data, index) {
-    return <CheckBox
-      style={{ flex: 1, padding: 10 }}
-      onClick={() => this.onClick(data, index)}
-      isChecked={data.checked}
-      leftText={data.name}
-      checkedImage={this._checkedImage(true)}
-      unCheckedImage={this._checkedImage(false)}
-    />
-  }
-
-  /**
-   * 点击checkbox
-   * @param data
-   * @param index
-   */
-  onClick(data, index) {
-    data.checked = !data.checked;
-    ArrayUtil.updateArray(this.changeValues, data);
-    this.state.keys[index] = data;
-    //更新state显示选中状态
-    this.setState({
-      keys: this.state.keys,
-    })
   }
 
   render() {
