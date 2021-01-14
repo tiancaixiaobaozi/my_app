@@ -16,6 +16,7 @@ import NavigationBar from '../components/NavigationBar';
 import { MORE_MENU } from '../config/MORE_MENU';
 import GlobalStyles from '../res/style/GlobalStyles';
 import ViewUtil from '../utils/ViewUtil';
+import { FLAG_LANGUAGE } from '../utils/LanguageDao';
 
 const THEME_COLOR = '#678';
 
@@ -38,6 +39,15 @@ class MyScreen extends Component {
         break;
       case MORE_MENU.About_Author:
         RouteName = 'AboutMePage';
+        break;
+      case MORE_MENU.Custom_Key:
+      case MORE_MENU.Remove_Key:
+      case MORE_MENU.Custom_Language:
+        RouteName = 'CustomKeyPage';
+        params.isRemoveKey = menu === MORE_MENU.Remove_Key;
+        params.flag = menu !== MORE_MENU.Custom_Language
+          ? FLAG_LANGUAGE.flag_key
+          : FLAG_LANGUAGE.flag_language;
         break;
       default:
         break;

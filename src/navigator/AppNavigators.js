@@ -9,6 +9,7 @@ import DataStorePage from '../pages/DataStorePage';
 import WebViewPage from '../pages/WebViewPage';
 import AboutPage from '../pages/AboutPage';
 import AboutMePage from '../pages/AboutMePage';
+import CustomKeyPage from '../pages/CustomKeyPage';
 
 const InitNavigator = createStackNavigator(
   {
@@ -49,6 +50,12 @@ const MainNavigator = createStackNavigator(
     },
     AboutMePage: {
       screen: AboutMePage,
+      navigationOptions: {
+        headerShown: false,
+      },
+    },
+    CustomKeyPage: {
+      screen: CustomKeyPage,
       navigationOptions: {
         headerShown: false,
       },
