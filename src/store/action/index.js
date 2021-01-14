@@ -2,6 +2,7 @@ import { onThemeChange } from './theme';
 import { onLoadPopularData, onLoadMorePopular, onFlushPopularFavorite } from './popular';
 import { onLoadTrendingData, onLoadMoreTrending, onFlushTrendingFavorite } from './trending';
 import { onLoadFavoriteData } from './favorite';
+import { onLoadLanguage } from './language';
 
 export default {
   // theme
@@ -16,4 +17,6 @@ export default {
   onFlushTrendingFavorite,
   // favorite
   onLoadFavoriteData,
+  // language
+  onLoadLanguage,
 };

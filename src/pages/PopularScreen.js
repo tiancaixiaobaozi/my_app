@@ -13,6 +13,7 @@ import FavoriteDao from '../utils/FavoriteDao';
 import { FLAG_STORE } from '../utils/DataStoreUtil';
 import FavoriteUtil from '../utils/FavoriteUtil';
 import EventTypes from '../utils/EventTypes';
+import { FLAG_LANGUAGE } from '../utils/LanguageDao';
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
@@ -188,24 +189,29 @@ const mapDispatchToProps = dispatch => ({
 });
 const PopularTabPage =  connect(mapStateToProps, mapDispatchToProps)(PopularTab);
 
-export default class PopularScreen extends Component {
+class PopularScreen extends Component {
   constructor(props) {
     super(props);
-    this.tabNames = ['Java', 'Android', 'iOS', 'React', 'PHP'];
+    const { onLoadLanguage } = this.props;
+    onLoadLanguage(FLAG_LANGUAGE.flag_key);
   }
   _getTabs() {
     const tabs = {};
-    this.tabNames.forEach((item, index) => {
-      tabs[`tab${index}`] = {
-        screen: props => <PopularTabPage {...props} tabLabel={item} />,
-        navigationOptions: {
-          title: item,
-        },
-      };
+    const { keys } = this.props;
+    keys.forEach((item, index) => {
+      if (item.checked) {
+        tabs[`tab${index}`] = {
+          screen: props => <PopularTabPage {...props} tabLabel={item.name} />,
+          navigationOptions: {
+            title: item.name,
+          },
+        };
+      }
     });
     return tabs;
   }
   render() {
+    const { keys } = this.props;
     let barStyle = {
       backgroundColor: THEME_COLOR,
       barStyle: 'light-content',
@@ -215,7 +221,7 @@ export default class PopularScreen extends Component {
       statusBar={barStyle}
       style={{ backgroundColor: THEME_COLOR }}
     />;
-    const TabNavigator = createAppContainer(createMaterialTopTabNavigator(
+    const TabNavigator = keys.length ? createAppContainer(createMaterialTopTabNavigator(
       this._getTabs(),
       {
         tabBarOptions: {
@@ -229,15 +235,22 @@ export default class PopularScreen extends Component {
           labelStyle: styles.labelStyle,
         },
       }
-    ));
+    )) : null;
     return (
       <View style={styles.container}>
         {navigationBar}
-        <TabNavigator />
+        {TabNavigator &&  <TabNavigator />}
       </View>
     );
   }
 }
+const mapPopularStateToProps = state => ({
+  keys: state.language.keys,
+});
+const mapPopularDispatchToProps = dispatch => ({
+  onLoadLanguage: (flag) => dispatch(actions.onLoadLanguage(flag)),
+});
+export default connect(mapPopularStateToProps, mapPopularDispatchToProps)(PopularScreen);
 
 const styles = StyleSheet.create({
   container: {

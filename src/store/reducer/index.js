@@ -3,6 +3,7 @@ import theme from './theme';
 import popular from './popular';
 import trending from './trending';
 import favorite from './favorite';
+import language from './language';
 
 const reducer = combineReducers({
   // theme
@@ -13,6 +14,8 @@ const reducer = combineReducers({
   trending,
   // favorite
   favorite,
+  // language
+  language,
 });
 
 export default reducer;

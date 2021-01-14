@@ -24,6 +24,8 @@ import FavoriteDao from '../utils/FavoriteDao';
 import { FLAG_STORE } from '../utils/DataStoreUtil';
 import FavoriteUtil from '../utils/FavoriteUtil';
 import EventTypes from '../utils/EventTypes';
+import { FLAG_LANGUAGE } from '../utils/LanguageDao';
+import ArrayUtil from '../utils/ArrayUtil';
 
 const URL = 'https://github.com/trending/';
 const THEME_COLOR = '#678';
@@ -209,23 +211,33 @@ const mapDispatchToProps = dispatch => ({
 });
 const TrendingTabPage =  connect(mapStateToProps, mapDispatchToProps)(TrendingTab);
 
-export default class TrendingScreen extends Component {
+class TrendingScreen extends Component {
   constructor(props) {
     super(props);
-    this.tabNames = ['JavaScript', 'Vue', 'C#', 'C'];
+    const { onLoadLanguage } = this.props;
+    onLoadLanguage(FLAG_LANGUAGE.flag_language);
     this.state = {
       timeSpan: TimeSpans[0],
     };
+    this.prevLanguages = [];
   }
   _getTabs() {
     const tabs = {};
-    this.tabNames.forEach((item, index) => {
-      tabs[`tab${index}`] = {
-        screen: props => <TrendingTabPage {...props} timeSpan={this.state.timeSpan} tabLabel={item} />,
-        navigationOptions: {
-          title: item,
-        },
-      };
+    const { languages } = this.props;
+    this.prevLanguages = languages;
+    languages.forEach((item, index) => {
+      if (item.checked) {
+        tabs[`tab${index}`] = {
+          screen: props => <TrendingTabPage
+            {...props}
+            timeSpan={this.state.timeSpan}
+            tabLabel={item.name}
+          />,
+          navigationOptions: {
+            title: item.name,
+          },
+        };
+      }
     });
     return tabs;
   }
@@ -282,7 +294,7 @@ export default class TrendingScreen extends Component {
    * @private
    */
   _tabNav() {
-    if (!this.tabNav) {
+    if (!this.tabNav || !ArrayUtil.isEqual(this.prevLanguages, this.props.languages)) {
       this.tabNav = createAppContainer(createMaterialTopTabNavigator(
         this._getTabs(),
         {
@@ -303,6 +315,7 @@ export default class TrendingScreen extends Component {
   }
 
   render() {
+    const { languages } = this.props;
     let barStyle = {
       backgroundColor: THEME_COLOR,
       barStyle: 'light-content',
@@ -319,16 +332,23 @@ export default class TrendingScreen extends Component {
      ** 但是tabNav不更新，则不会刷新tabNav对应的列表
      ** 所以我们使用DeviceEventEmitter发送事件更新列表数据
      */
-    const TabNavigator = this._tabNav();
+    const TabNavigator = languages.length ? this._tabNav() : null;
     return (
       <View style={styles.container}>
         {navigationBar}
-        <TabNavigator />
+        { TabNavigator && <TabNavigator /> }
         {this.renderTendingDialog()}
       </View>
     );
   }
 }
+const mapTrendingStateToProps = state => ({
+  languages: state.language.languages,
+});
+const mapTrendingDispatchToProps = dispatch => ({
+  onLoadLanguage: (flag) => dispatch(actions.onLoadLanguage(flag)),
+});
+export default connect(mapTrendingStateToProps, mapTrendingDispatchToProps)(TrendingScreen);
 
 const styles = StyleSheet.create({
   container: {
