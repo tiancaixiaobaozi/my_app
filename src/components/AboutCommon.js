@@ -160,9 +160,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     flexDirection: 'column',
-    paddingTop: 100
+    paddingTop: 50
   },
   avatar: {
+    width: AVATAR_SIZE,
+    height: AVATAR_SIZE,
     marginBottom: 10,
     borderRadius: AVATAR_SIZE / 2
   },
