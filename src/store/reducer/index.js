@@ -4,18 +4,15 @@ import popular from './popular';
 import trending from './trending';
 import favorite from './favorite';
 import language from './language';
+import search from './search';
 
 const reducer = combineReducers({
-  // theme
   theme,
-  // popular
   popular,
-  // trending
   trending,
-  // favorite
   favorite,
-  // language
   language,
+  search,
 });
 
 export default reducer;

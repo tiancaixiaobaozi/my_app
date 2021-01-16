@@ -9,8 +9,16 @@ import FavoriteUtil from './FavoriteUtil';
  * @param data 数据源
  * @param pageSize 页面数据量
  * @param favoriteDao 收藏的DAO
+ * @param params 扩展
  */
-export function handleData(type, dispatch, storeName, data, pageSize, favoriteDao) {
+export function handleData(
+  type,
+  dispatch,
+  storeName,
+  data,
+  pageSize,
+  favoriteDao,
+  params) {
   let fixItems = [];
   if (data && data.data) {
     // 处理popular和trending数据格式差异
@@ -31,6 +39,7 @@ export function handleData(type, dispatch, storeName, data, pageSize, favoriteDa
       projectModels,
       storeName,
       pageIndex: 1,
+      ...params,
     });
   })
 }
@@ -59,5 +68,11 @@ export async function _projectModels(showItems, favoriteDao, callback) {
   }
   if (typeof callback === 'function') {
     callback(projectModels);
+  }
+}
+
+export const doCallback = (callback, object) => {
+  if (typeof callback === 'function') {
+    callback(object);
   }
 }
