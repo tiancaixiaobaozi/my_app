@@ -7,7 +7,6 @@ import ViewUtil from '../utils/ViewUtil';
 import AboutCommon from '../components/AboutCommon';
 import config from '../res/data/config.json';
 
-const THEME_COLOR = '#678';
 export const FLAG_ABOUT = {
   flag_about: 'about',
   flag_about_me: 'about_me',
@@ -70,7 +69,9 @@ export default class AboutPage extends Component {
    * @param menu
    */
   getItem(menu) {
-    return ViewUtil.getMenuItem(() => this.onClick(menu), menu, THEME_COLOR);
+    return ViewUtil.getMenuItem(
+      () => this.onClick(menu), menu, this.params.theme.themeColor
+    );
   }
 
   render() {

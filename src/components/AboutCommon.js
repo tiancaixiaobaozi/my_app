@@ -7,7 +7,6 @@ import GlobalStyles from '../res/style/GlobalStyles';
 import ViewUtil from '../utils/ViewUtil';
 
 const window = Dimensions.get('window');
-const THEME_COLOR = '#678';
 const ABOUT_URL = 'http://www.devio.org/io/GitHubPopular/json/github_app_config.json'
 const AVATAR_SIZE = 90;
 const PARALLAX_HEADER_HEIGHT = 270;
@@ -105,7 +104,7 @@ export default class AboutCommon {
     const renderConfig = this.getParallaxRenderConfig(params);
     return (
       <ParallaxScrollView
-        backgroundColor={THEME_COLOR}
+        backgroundColor={this.props.theme.themeColor}
         contentBackgroundColor={GlobalStyles.backgroundColor}
         parallaxHeaderHeight={PARALLAX_HEADER_HEIGHT}
         stickyHeaderHeight={STICKY_HEADER_HEIGHT}

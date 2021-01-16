@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { Modal, TouchableOpacity, StyleSheet, View, Text, ScrollView } from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { Modal, TouchableHighlight, StyleSheet, View, Text, ScrollView, Platform } from 'react-native';
+import { connect } from 'react-redux';
+import actions from '../store/action';
 import ThemeDao from '../utils/ThemeDao';
 import GlobalStyles from '../res/style/GlobalStyles';
+import ThemeFactory, { ThemeFlags } from '../res/style/ThemeFactory';
 
-export default class CustomTheme extends Component {
+class CustomTheme extends Component {
   constructor(props) {
     super(props);
     this.themeDao = new ThemeDao();
@@ -19,6 +21,43 @@ export default class CustomTheme extends Component {
     this.setState({
       visible: false,
     })
+  }
+
+  /**
+   * 选择主题
+   * @param themeKey
+   */
+  onSelectTheme(themeKey) {
+    this.props.onClose();
+    this.themeDao.save(ThemeFlags[themeKey]);
+    const { onThemeChange } = this.props;
+    onThemeChange(ThemeFactory.createTheme(ThemeFlags[themeKey]));
+  }
+  getThemeItem(themeKey) {
+    return (
+      <TouchableHighlight
+        style={{ flex: 1 }}
+        underlayColor={'#fff'}
+        onPress={() => this.onSelectTheme(themeKey)}
+      >
+        <View style={[{backgroundColor: ThemeFlags[themeKey]}, styles.themeItem]}>
+          <Text style={styles.themeText}>{themeKey}</Text>
+        </View>
+      </TouchableHighlight>
+    );
+  }
+  renderThemeItems() {
+    let views = [];
+    for (let i = 0, keys = Object.keys(ThemeFlags), l = keys.length; i < l; i += 3) {
+      views.push(
+        <View key={i} style={{ flexDirection: 'row' }}>
+          {this.getThemeItem(keys[i])}
+          {this.getThemeItem(keys[i + 1])}
+          {this.getThemeItem(keys[i + 2])}
+        </View>
+      );
+    }
+    return views;
   }
   renderContentView() {
     return (
@@ -40,6 +79,7 @@ export default class CustomTheme extends Component {
   }
 
   render() {
+    console.log('visible:::', this.props.visible);
     return (
       this.props.visible
         ? <View style={GlobalStyles.root_container}>{this.renderContentView()}</View>
@@ -47,40 +87,36 @@ export default class CustomTheme extends Component {
     );
   }
 }
+const mapDispatchToProps = dispatch => ({
+  onThemeChange: (theme) => dispatch(actions.onThemeChange(theme)),
+});
+export default connect(null, mapDispatchToProps)(CustomTheme);
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'rgba(0,0,0,0.6)',
+  modalContainer: {
     flex: 1,
-    alignItems: 'center',
-  },
-  arrow: {
-    marginTop: 40,
-    color: '#fff',
-    padding: 0,
-    margin: -15,
-  },
-  content: {
+    margin: 10,
+    marginTop: Platform.OS === 'ios' ? 20 : 10,
     backgroundColor: '#fff',
     borderRadius: 3,
-    paddingTop: 3,
-    paddingBottom: 3,
-    marginRight: 3,
+    shadowColor: 'gray',
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    padding: 3,
   },
-  text_container: {
+  themeItem: {
+    flex: 1,
+    height: 120,
+    margin: 3,
+    padding: 3,
+    borderRadius: 2,
     alignItems: 'center',
-    flexDirection: 'row',
+    justifyContent: 'center',
   },
-  label: {
+  themeText: {
+    color: '#fff',
+    fontWeight: '500',
     fontSize: 16,
-    color: '#000',
-    fontWeight: '400',
-    padding: 8,
-    paddingLeft: 26,
-    paddingRight: 26,
-  },
-  line: {
-    height: 0.3,
-    backgroundColor: 'darkgray',
   },
 })

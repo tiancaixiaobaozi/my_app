@@ -18,8 +18,6 @@ import GlobalStyles from '../res/style/GlobalStyles';
 import ViewUtil from '../utils/ViewUtil';
 import { FLAG_LANGUAGE } from '../utils/LanguageDao';
 
-const THEME_COLOR = '#678';
-
 class MyScreen extends Component {
 
   /**
@@ -27,6 +25,7 @@ class MyScreen extends Component {
    * @param menu
    */
   onClick(menu) {
+    const { theme } = this.props;
     let RouteName, params = {};
     switch (menu) {
       case MORE_MENU.Tutorial:
@@ -57,9 +56,14 @@ class MyScreen extends Component {
         RouteName = 'SortKeyPage';
         params.flag = FLAG_LANGUAGE.flag_language;
         break;
+      case MORE_MENU.Custom_Theme:
+        const { onShowCustomThemeView } = this.props;
+        onShowCustomThemeView(true);
+        break;
       default:
         break;
     }
+    params.theme = theme;
     if (RouteName) {
       NavigationUtil.goPage(RouteName, params);
     }
@@ -70,19 +74,20 @@ class MyScreen extends Component {
    * @param menu
    */
   getItem(menu) {
-    return ViewUtil.getMenuItem(() => this.onClick(menu), menu, THEME_COLOR);
+    return ViewUtil.getMenuItem(() => this.onClick(menu), menu, this.props.theme.themeColor);
   }
 
   render() {
+    const { theme } = this.props;
     let statusBar = {
-      backgroundColor: THEME_COLOR,
+      backgroundColor: theme.themeColor,
       barStyle: 'light-content',
     };
     let navigationBar = (
       <NavigationBar
         title="我的"
         statusBar={statusBar}
-        style={{ backgroundColor: THEME_COLOR }}
+        style={theme.styles.navBar}
       />
     );
     return (
@@ -94,14 +99,14 @@ class MyScreen extends Component {
               <Ionicons
                 name={MORE_MENU.About.icon}
                 size={40}
-                style={{ marginRight: 10, color: THEME_COLOR }}
+                style={{ marginRight: 10, color: theme.themeColor }}
               />
               <Text>Github Popular</Text>
             </View>
             <Ionicons
               name={'ios-arrow-forward'}
               size={16}
-              style={{ marginRight: 10, alignSelf: 'center', color: THEME_COLOR }}
+              style={{ marginRight: 10, alignSelf: 'center', color: theme.themeColor }}
             />
           </TouchableOpacity>
           <View style={GlobalStyles.line} />
@@ -139,11 +144,14 @@ class MyScreen extends Component {
     );
   }
 }
-
+const mapStateToProps = state => ({
+  theme: state.theme.theme,
+});
 const mapDispatchToProps = dispatch => ({
   handleThemeChange: theme => dispatch(actions.onThemeChange(theme)),
+  onShowCustomThemeView: show => dispatch(actions.onShowCustomThemeView(show)),
 });
-export default connect(null, mapDispatchToProps)(MyScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(MyScreen);
 
 const styles = StyleSheet.create({
   container: {

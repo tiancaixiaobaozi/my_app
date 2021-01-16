@@ -15,8 +15,6 @@ import FavoriteUtil from '../utils/FavoriteUtil';
 import TrendingItem from '../components/TrendingItem';
 import EventTypes from '../utils/EventTypes';
 
-const THEME_COLOR = '#678';
-
 class FavoriteTab extends Component {
   constructor(props) {
     super(props);
@@ -73,9 +71,11 @@ class FavoriteTab extends Component {
     return (
       <Item
         projectModel={item}
+        theme={this.props.theme}
         onSelect={callback => {
           NavigationUtil.goPage('DetailPage', {
             projectModel: item,
+            theme: this.props.theme,
             flag: this.storeName,
             callback,
           });
@@ -101,6 +101,7 @@ class FavoriteTab extends Component {
 
   render() {
     let store = this._store();
+    const { theme } = this.props;
     return (
       <View style={styles.container}>
         <FlatList
@@ -110,11 +111,11 @@ class FavoriteTab extends Component {
           refreshControl={
             <RefreshControl
               title="Loading"
-              titleColor={THEME_COLOR}
-              colors={[THEME_COLOR]}
+              titleColor={theme.themeColor}
+              colors={[theme.themeColor]}
               refreshing={store.isLoading}
               onRefresh={() => this.loadData(true)}
-              tintColor={THEME_COLOR}
+              tintColor={theme.themeColor}
             />
           }
         />
@@ -132,31 +133,32 @@ const mapDispatchToProps = dispatch => ({
 });
 const FavoriteTabPage =  connect(mapStateToProps, mapDispatchToProps)(FavoriteTab);
 
-export default class FavoriteScreen extends Component {
+class FavoriteScreen extends Component {
   constructor(props) {
     super(props);
     this.tabNames = ['最热', '趋势'];
   }
   render() {
+    const { theme } = this.props;
     let barStyle = {
-      backgroundColor: THEME_COLOR,
+      backgroundColor: theme.themeColor,
       barStyle: 'light-content',
     };
     let navigationBar = <NavigationBar
       title="收藏"
       statusBar={barStyle}
-      style={{ backgroundColor: THEME_COLOR }}
+      style={theme.styles.navBar}
     />;
     const TabNavigator = createAppContainer(createMaterialTopTabNavigator(
       {
         'Popular': {
-          screen: props => <FavoriteTabPage {...props} flag={FLAG_STORE.flag_popular} />,
+          screen: props => <FavoriteTabPage {...props} theme={theme} flag={FLAG_STORE.flag_popular} />,
           navigationOptions: {
             title: '最热',
           },
         },
         'Trending': {
-          screen: props => <FavoriteTabPage {...props} flag={FLAG_STORE.flag_trending} />,
+          screen: props => <FavoriteTabPage {...props} theme={theme} flag={FLAG_STORE.flag_trending} />,
           navigationOptions: {
             title: '趋势',
           },
@@ -167,7 +169,7 @@ export default class FavoriteScreen extends Component {
           tabStyle: styles.tabStyle,
           upperCaseLabel: false,
           style: {
-            backgroundColor: THEME_COLOR,
+            backgroundColor: theme.themeColor,
           },
           indicatorStyle: styles.indicatorStyle,
           labelStyle: styles.labelStyle,
@@ -182,6 +184,9 @@ export default class FavoriteScreen extends Component {
     );
   }
 }
+export default connect(state => ({
+  theme: state.theme.theme,
+}))(FavoriteScreen);
 
 const styles = StyleSheet.create({
   container: {

@@ -8,7 +8,6 @@ import ViewUtil from '../utils/ViewUtil';
 import AboutCommon from '../components/AboutCommon';
 import config from '../res/data/config.json';
 
-const THEME_COLOR = '#678';
 export const FLAG_ABOUT = {
   flag_about: 'about',
   flag_about_me: 'about_me',
@@ -35,7 +34,7 @@ export default class AboutMePage extends Component {
 
   /**
    * 点击菜单
-   * @param menu
+   * @param tab
    */
   onClick(tab) {
     if (!tab) return;
@@ -82,7 +81,7 @@ export default class AboutMePage extends Component {
         })
       },
       data.name,
-      THEME_COLOR,
+      this.params.theme.themeColor,
       Ionicons,
       data.icon,
       isShow ? 'ios-arrow-up' : 'ios-arrow-down'
@@ -104,7 +103,7 @@ export default class AboutMePage extends Component {
           {ViewUtil.getSettingItem(
             () => this.onClick(dic[i]),
             title,
-            THEME_COLOR,
+            this.params.theme.themeColor,
           )}
           <View style={GlobalStyles.line} />
         </View>

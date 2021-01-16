@@ -12,8 +12,6 @@ import GlobalStyles from '../res/style/GlobalStyles';
 import NavigationUtil from '../utils/NavigationUtil';
 import ArrayUtil from '../utils/ArrayUtil';
 
-const THEME_COLOR = '#678';
-
 class CustomKeyPage extends Component {
   constructor(props) {
     super(props);
@@ -137,7 +135,7 @@ class CustomKeyPage extends Component {
     return <Ionicons
       name={checked ? 'ios-checkbox' : 'md-square-outline'}
       size={20}
-      style={{ color: THEME_COLOR }}
+      style={{ color: this.params.theme.themeColor }}
     />;
   }
 
@@ -197,7 +195,7 @@ class CustomKeyPage extends Component {
     let rightButtonTitle = this.isRemoveKey ? '移除' : '保存';
     let navigationBar = <NavigationBar
       title={title}
-      style={{ backgroundColor: THEME_COLOR }}
+      style={{ backgroundColor: this.params.theme.themeColor }}
       leftButton={ViewUtil.getLeftBackButton(() => this.onBack())}
       rightButton={ViewUtil.getRightButton(rightButtonTitle, () => this.onSave())}
     />;

@@ -28,7 +28,6 @@ import { FLAG_LANGUAGE } from '../utils/LanguageDao';
 import ArrayUtil from '../utils/ArrayUtil';
 
 const URL = 'https://github.com/trending/';
-const THEME_COLOR = '#678';
 const PAGE_SIZE = 10;
 const EVENT_TYPE_TIMESPAN_CHANGE = 'EVENT_TYPE_TIMESPAN_CHANGE';
 const favoriteDao = new FavoriteDao(FLAG_STORE.flag_trending);
@@ -128,12 +127,15 @@ class TrendingTab extends Component {
    */
   renderItem(data) {
     const item = data.item;
+    const { theme } = this.props;
     return (
       <TrendingItem
         projectModel={item}
+        theme={theme}
         onSelect={callback => {
           NavigationUtil.goPage('DetailPage', {
             projectModel: item,
+            theme,
             flag: FLAG_STORE.flag_trending,
             callback,
           });
@@ -161,6 +163,7 @@ class TrendingTab extends Component {
 
   render() {
     let store = this._store();
+    const { theme } = this.props;
     return (
       <View style={styles.container}>
         <FlatList
@@ -170,11 +173,11 @@ class TrendingTab extends Component {
           refreshControl={
             <RefreshControl
               title="Loading"
-              titleColor={THEME_COLOR}
-              colors={[THEME_COLOR]}
+              titleColor={theme.themeColor}
+              colors={[theme.themeColor]}
               refreshing={store.isLoading}
               onRefresh={() => this.loadData()}
-              tintColor={THEME_COLOR}
+              tintColor={theme.themeColor}
             />
           }
           ListFooterComponent={() => this.renderIndicator()}
@@ -223,7 +226,7 @@ class TrendingScreen extends Component {
   }
   _getTabs() {
     const tabs = {};
-    const { languages } = this.props;
+    const { languages, theme } = this.props;
     this.prevLanguages = languages;
     languages.forEach((item, index) => {
       if (item.checked) {
@@ -232,6 +235,7 @@ class TrendingScreen extends Component {
             {...props}
             timeSpan={this.state.timeSpan}
             tabLabel={item.name}
+            theme={theme}
           />,
           navigationOptions: {
             title: item.name,
@@ -294,7 +298,9 @@ class TrendingScreen extends Component {
    * @private
    */
   _tabNav() {
-    if (!this.tabNav || !ArrayUtil.isEqual(this.prevLanguages, this.props.languages)) {
+    const theme = this.props;
+    if (theme !== this.theme || !this.tabNav || !ArrayUtil.isEqual(this.prevLanguages, this.props.languages)) {
+      this.theme = theme;
       this.tabNav = createAppContainer(createMaterialTopTabNavigator(
         this._getTabs(),
         {
@@ -303,7 +309,7 @@ class TrendingScreen extends Component {
             upperCaseLabel: false,
             scrollEnabled: true,
             style: {
-              backgroundColor: THEME_COLOR,
+              backgroundColor: this.props.theme.themeColor,
             },
             indicatorStyle: styles.indicatorStyle,
             labelStyle: styles.labelStyle,
@@ -316,15 +322,15 @@ class TrendingScreen extends Component {
   }
 
   render() {
-    const { languages } = this.props;
+    const { languages, theme } = this.props;
     let barStyle = {
-      backgroundColor: THEME_COLOR,
+      backgroundColor: theme.themeColor,
       barStyle: 'light-content',
     };
     let navigationBar = <NavigationBar
       title="趋势"
       statusBar={barStyle}
-      style={{ backgroundColor: THEME_COLOR }}
+      style={theme.styles.navBar}
       titleView={this.renderTitleView()}
     />;
     /**
@@ -345,6 +351,7 @@ class TrendingScreen extends Component {
 }
 const mapTrendingStateToProps = state => ({
   languages: state.language.languages,
+  theme: state.theme.theme,
 });
 const mapTrendingDispatchToProps = dispatch => ({
   onLoadLanguage: (flag) => dispatch(actions.onLoadLanguage(flag)),

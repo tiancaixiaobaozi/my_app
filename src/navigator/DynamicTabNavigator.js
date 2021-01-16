@@ -56,7 +56,7 @@ class TabBarComponent extends React.Component {
   render() {
     return <BottomTabBar
       {...this.props}
-      activeTintColor={this.props.theme}
+      activeTintColor={this.props.theme.themeColor}
     />;
   }
 }
@@ -97,6 +97,6 @@ class DynamicTabNavigator extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  theme: state.theme.color,
+  theme: state.theme.theme,
 });
 export default connect(mapStateToProps)(DynamicTabNavigator);

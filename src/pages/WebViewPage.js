@@ -5,8 +5,6 @@ import NavigationBar from '../components/NavigationBar';
 import ViewUtil from '../utils/ViewUtil';
 import NavigationUtil from '../utils/NavigationUtil';
 
-const THEME_COLOR = '#678';
-
 export default class WebViewPage extends Component {
   constructor(props) {
     super(props);
@@ -46,10 +44,11 @@ export default class WebViewPage extends Component {
   }
 
   render() {
+    const { theme } = this.params;
     let navigationBar = <NavigationBar
       title={this.state.title}
       leftButton={ViewUtil.getLeftBackButton(() => this.onBack())}
-      style={{ backgroundColor: THEME_COLOR }}
+      style={theme.styles.navBar}
     />;
 
     return (

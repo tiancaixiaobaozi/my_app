@@ -8,7 +8,6 @@ import NavigationUtil from '../utils/NavigationUtil';
 import FavoriteDao from '../utils/FavoriteDao';
 
 const TRENDING_URL = 'https://github.com/';
-const THEME_COLOR = '#678';
 
 export default class DetailPage extends Component {
   constructor(props) {
@@ -78,6 +77,7 @@ export default class DetailPage extends Component {
   }
 
   render() {
+    const { theme } = this.params;
     const titleLayoutStyle = this.state.title.length > 20
       ? { paddingRight: 30 }
       : null;
@@ -86,7 +86,7 @@ export default class DetailPage extends Component {
       leftButton={ViewUtil.getLeftBackButton(() => this.onBack())}
       rightButton={this.renderRightButton()}
       titleLayoutStyle={titleLayoutStyle}
-      style={{ backgroundColor: THEME_COLOR }}
+      style={theme.styles.navBar}
     />;
 
     return (
