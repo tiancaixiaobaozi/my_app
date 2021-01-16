@@ -122,7 +122,7 @@ class SortKeyPage extends Component {
   }
 
   render() {
-    let title = this.params.flag === FLAG_LANGUAGE.flag_language ? '语言排序' : 标签排序;
+    let title = this.params.flag === FLAG_LANGUAGE.flag_language ? '语言排序' : '标签排序';
     let navigationBar = <NavigationBar
       title={title}
       style={{ backgroundColor: THEME_COLOR }}

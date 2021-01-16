@@ -62,9 +62,9 @@ class CustomKeyPage extends Component {
     const { flag, isRemoveKey } = props.navigation.state.params;
     let key = flag === FLAG_LANGUAGE.flag_key ? 'keys' : 'languages';
     if (isRemoveKey && !original) {
-      return state && state.keys
-        && state.keys.length !== 0
-        || props.language[key].map(val => {
+      // && 返回后者， 若state.keys不存在则使用props中的
+      return (state && state.keys && state.keys.length !== 0)
+        && state.keys || props.language[key].map(val => {
           return {
             // 不直接修改props, copy一份
             ...val,

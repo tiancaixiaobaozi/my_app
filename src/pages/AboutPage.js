@@ -33,6 +33,7 @@ export default class AboutPage extends Component {
    */
   onClick(menu) {
     let RouteName, params = {};
+    const { theme } = this.params;
     switch (menu) {
       case MORE_MENU.Tutorial:
         RouteName = 'WebViewPage';
@@ -60,6 +61,7 @@ export default class AboutPage extends Component {
         break;
     }
     if (RouteName) {
+      params.theme = theme;
       NavigationUtil.goPage(RouteName, params);
     }
   }

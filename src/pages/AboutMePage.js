@@ -40,9 +40,11 @@ export default class AboutMePage extends Component {
     if (!tab) return;
     // 链接
     if (tab.url) {
+      const { theme } = this.params;
       NavigationUtil.goPage('WebViewPage', {
         title: tab.title,
         url: tab.url,
+        theme,
       });
     }
     // 邮箱
@@ -74,6 +76,7 @@ export default class AboutMePage extends Component {
    * @param key
    */
   _item(data, isShow, key) {
+    const { theme } = this.params;
     return ViewUtil.getSettingItem(
       () => {
         this.setState({
@@ -81,7 +84,7 @@ export default class AboutMePage extends Component {
         })
       },
       data.name,
-      this.params.theme.themeColor,
+      theme.themeColor,
       Ionicons,
       data.icon,
       isShow ? 'ios-arrow-up' : 'ios-arrow-down'

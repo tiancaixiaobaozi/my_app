@@ -79,7 +79,6 @@ class CustomTheme extends Component {
   }
 
   render() {
-    console.log('visible:::', this.props.visible);
     return (
       this.props.visible
         ? <View style={GlobalStyles.root_container}>{this.renderContentView()}</View>

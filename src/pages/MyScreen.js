@@ -3,12 +3,10 @@ import {
   StyleSheet,
   Text,
   View,
-  Button,
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
 import { connect } from 'react-redux';
-import IconFeather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import actions from '../store/action';
 import NavigationUtil from '../utils/NavigationUtil';
@@ -63,8 +61,8 @@ class MyScreen extends Component {
       default:
         break;
     }
-    params.theme = theme;
     if (RouteName) {
+      params.theme = theme;
       NavigationUtil.goPage(RouteName, params);
     }
   }
