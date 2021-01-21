@@ -1,5 +1,4 @@
 import  types from '../types';
-import DataStore, { FLAG_STORE } from '../../utils/DataStoreUtil';
 import { _projectModels, handleData, doCallback } from '../../utils/ActionUtil';
 import ArrayUtil from '../../utils/ArrayUtil';
 
@@ -53,7 +52,7 @@ export function onSearch (
           pageSize,
           favoriteDao,
           {
-            showBottomButton: !checkKeyIsExits(popularKeys, inputKey),
+            showBottomButton: !ArrayUtil.checkKeyIsExist(popularKeys, inputKey),
             inputKey,
           });
       })
@@ -101,7 +100,7 @@ export function onLoadMoreSearch(
           callback('no more');
         }
         dispatch({
-          type: types.POPULAR_LOAD_MORE_FAIL,
+          type: types.SEARCH_LOAD_MORE_FAIL,
           error: 'no more',
           pageIndex: --pageIndex,
         });
@@ -112,7 +111,7 @@ export function onLoadMoreSearch(
           : pageSize * pageIndex;
         _projectModels(dataArray.slice(0, max), favoriteDao, projectModels => {
           dispatch({
-            type: types.POPULAR_LOAD_MORE_SUCCESS,
+            type: types.SEARCH_LOAD_MORE_SUCCESS,
             pageIndex,
             projectModels,
           });
@@ -136,19 +135,6 @@ function hasCancel(token, isRemove) {
   if (CANCEL_TOKENS.includes(token)) {
     isRemove && ArrayUtil.remove(CANCEL_TOKENS, token);
     return true;
-  }
-  return false;
-}
-
-/**
- * 检查key是否存在于keys中
- * @param keys
- * @param key
- * @return {boolean}
- */
-function checkKeyIsExits(keys, key) {
-  for (let i = 0, l = keys.length; i < l; i++) {
-    if (key.toLowerCase() === keys[i].name.toLowerCase()) return true;
   }
   return false;
 }

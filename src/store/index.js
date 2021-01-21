@@ -4,7 +4,7 @@ import reducer from './reducer';
 
 /**
  * 自定义中间件logger
- * @param store
+ * @param store { getState, dispatch }
  * @return {function(*): function(...[*]=)}
  */
 const logger = store => next => action => {

@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
-import { FlatList, StyleSheet, View, RefreshControl, ActivityIndicator } from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  View,
+  RefreshControl,
+  ActivityIndicator,
+  TouchableOpacity,
+} from 'react-native';
 import { connect } from 'react-redux';
 import actions from '../store/action';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { createAppContainer } from 'react-navigation';
 import Toast from 'react-native-easy-toast';
 import EventBus from 'react-native-event-bus';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import PopularItem from '../components/PopularItem';
 import NavigationBar from '../components/NavigationBar';
 import NavigationUtil from '../utils/NavigationUtil';
@@ -213,6 +221,27 @@ class PopularScreen extends Component {
     });
     return tabs;
   }
+  renderRightButton() {
+    const { theme } = this.props;
+    return <TouchableOpacity
+      onPress={() => {
+        NavigationUtil.goPage('SearchPage', { theme });
+      }}
+    >
+      <View style={{ padding: 5, marginRight: 8 }}>
+        <Ionicons
+          name={'ios-search'}
+          size={24}
+          style={{
+            marginRight: 8,
+            alignSelf: 'center',
+            color: '#fff',
+          }}
+        />
+      </View>
+    </TouchableOpacity>
+  }
+
   render() {
     const { keys, theme } = this.props;
     let barStyle = {
@@ -223,6 +252,7 @@ class PopularScreen extends Component {
       title="最热"
       statusBar={barStyle}
       style={theme.styles.navBar}
+      rightButton={this.renderRightButton()}
     />;
     const TabNavigator = keys.length ? createAppContainer(createMaterialTopTabNavigator(
       this._getTabs(),
