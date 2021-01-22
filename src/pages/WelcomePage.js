@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import SplashScreen from 'react-native-splash-screen';
 import NavigationUtil from '../utils/NavigationUtil';
 
 export default class WelcomePage extends Component {
   componentDidMount() {
     this.timer = setTimeout(() => {
       // 跳转首页
+      SplashScreen.hide();
       NavigationUtil.resetToHomePage(this.props);
     }, 2000);
   }
@@ -14,16 +15,6 @@ export default class WelcomePage extends Component {
   }
 
   render() {
-    return (<View style={styles.container}>
-      <Text>Welcome Page</Text>
-    </View>);
+    return null;
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
