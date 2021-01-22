@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { DeviceInfo, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import NavigationBar from '../components/NavigationBar';
 import ViewUtil from '../utils/ViewUtil';
 import NavigationUtil from '../utils/NavigationUtil';
 import FavoriteDao from '../utils/FavoriteDao';
+import SafeAreaViewPlus from '../components/SafeAreaViewPlus';
 
 const TRENDING_URL = 'https://github.com/';
 
@@ -90,7 +91,7 @@ export default class DetailPage extends Component {
     />;
 
     return (
-      <View style={styles.container}>
+      <SafeAreaViewPlus topColor={theme.themeColor}>
         {navigationBar}
         <WebView
           ref={webview => this.webview = webview}
@@ -98,14 +99,7 @@ export default class DetailPage extends Component {
           onNavigationStateChange={e => this.onNavigationStateChange(e)}
           source={{ uri: this.state.url }}
         />
-      </View>
+      </SafeAreaViewPlus>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: DeviceInfo.isIPhoneX_deprecated ? 30 : 0,
-  },
-});

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions, Platform, View, Text, Image, StyleSheet } from 'react-native';
+import { DeviceInfo, Dimensions, Platform, View, Text, Image, StyleSheet } from 'react-native';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import NavigationUtil from '../utils/NavigationUtil';
 import BackPress from './BackPress';
@@ -10,8 +10,10 @@ const window = Dimensions.get('window');
 const ABOUT_URL = 'http://www.devio.org/io/GitHubPopular/json/github_app_config.json'
 const AVATAR_SIZE = 90;
 const PARALLAX_HEADER_HEIGHT = 270;
+const TOP = (Platform.OS === 'ios')
+  ? 20 + (DeviceInfo.isIPhoneX_deprecated ? 24 : 0) : 0;
 const STICKY_HEADER_HEIGHT = (Platform.OS === 'ios')
-  ? GlobalStyles.nav_bar_height_ios + 20
+  ? GlobalStyles.nav_bar_height_ios + TOP
   : GlobalStyles.nav_bar_height_android;
 
 export default class AboutCommon {
@@ -131,8 +133,8 @@ const styles = StyleSheet.create({
   },
   stickySection: {
     height: STICKY_HEADER_HEIGHT,
-    width: 300,
-    justifyContent: 'flex-end'
+    alignItems: 'center',
+    paddingTop: TOP,
   },
   stickySectionText: {
     color: 'white',
@@ -146,7 +148,7 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     paddingRight: 8,
-    paddingTop: (Platform.OS === 'ios') ? 20 : 0,
+    paddingTop: TOP,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
